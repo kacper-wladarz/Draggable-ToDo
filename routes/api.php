@@ -12,7 +12,10 @@ Route::name("api.")->group(function () {
         Route::post("/logout", [AuthController::class, "logout"])->middleware("auth:sanctum")->name("logout");
     });
 
-    Route::middleware("auth:sanctum")->name("projects.")->group(function () {
-        Route::post("/", [ProjectController::class, "create"])->name("create");
-    });
+    Route::middleware("auth:sanctum")
+        ->prefix("projects")
+        ->name("projects.")
+        ->group(function () {
+            Route::post("/", [ProjectController::class, "store"])->name("store");
+        });
 });

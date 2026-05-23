@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "../../Providers/Auth/AuthContext";
-import { useLogoutMutation } from "../../Queries/AuthQuery";
+import { useLogoutMutation } from "../../Tanstack/Auth/AuthMutations";
 import { useNavigate } from "react-router";
 
 const TopBar = () => {
@@ -10,13 +10,10 @@ const TopBar = () => {
     const navigate = useNavigate();
 
     const logout = () => {
-        logoutMutation.mutate(undefined, {
-            onSettled: () => {
-                localStorage.removeItem("user_auth");
-                setToken(null);
-                navigate("/login");
-            },
-        });
+        localStorage.removeItem("user_auth");
+        setToken(null);
+        navigate("/login");
+        logoutMutation.mutate();
     };
 
     return (

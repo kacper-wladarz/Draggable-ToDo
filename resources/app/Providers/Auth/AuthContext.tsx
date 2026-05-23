@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
-import { useAuthQuery } from "../../Queries/AuthQuery";
+import { useAuthQuery } from "../../Tanstack/Auth/AuthQueries";
 import LoaderIcon from "../../Assets/LoaderIcon";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);

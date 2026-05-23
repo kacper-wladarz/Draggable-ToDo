@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../../Providers/Auth/AuthContext";
-import { useLoginMutation } from "../../Queries/AuthQuery";
+import { useLoginMutation } from "../../Tanstack/Auth/AuthMutations";
 import { Link, useNavigate } from "react-router";
 import LoginPageInput from "../../Components/LoginPage/LoginPageInput";
 import LoginPageSubmitButton from "../../Components/LoginPage/LoginPageSubmitButton";

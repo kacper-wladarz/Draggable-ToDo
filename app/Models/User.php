@@ -9,6 +9,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
@@ -61,6 +62,11 @@ class User extends Authenticatable
             "name" => ["required", "string", "max:255"],
             "login" => ["required", "string", "unique:users,login", "max:255"],
             "password" => ["required", "string", "min:8", "max:255", "confirmed"],
-        ]);
+        ], [], ["name" => "nickname"]);
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class, "user_id", "id");
     }
 }

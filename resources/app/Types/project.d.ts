@@ -1,0 +1,3 @@
+interface NewProject {
+    name: string
+}
