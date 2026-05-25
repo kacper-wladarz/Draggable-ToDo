@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Auth\AuthServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {

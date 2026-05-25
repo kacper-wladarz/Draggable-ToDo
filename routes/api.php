@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
 Route::name("api.")->group(function () {
@@ -13,9 +13,9 @@ Route::name("api.")->group(function () {
     });
 
     Route::middleware("auth:sanctum")
-        ->prefix("projects")
-        ->name("projects.")
+        ->prefix("workspaces")
+        ->name("workspaces.")
         ->group(function () {
-            Route::post("/", [ProjectController::class, "store"])->name("store");
+            Route::post("/", [WorkspaceController::class, "store"])->name("store");
         });
 });

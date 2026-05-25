@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuthContext } from "../../Providers/Auth/AuthContext";
 import { useLoginMutation } from "../../Tanstack/Auth/AuthMutations";
 import { Link, useNavigate } from "react-router";
-import LoginPageInput from "../../Components/LoginPage/LoginPageInput";
-import LoginPageSubmitButton from "../../Components/LoginPage/LoginPageSubmitButton";
+import LoginPageInput from "../../Components/AuthPage/LoginPageInput";
+import LoginPageSubmitButton from "../../Components/AuthPage/LoginPageSubmitButton";
 
 const Login = () => {
-    const { isAuthenticated, setToken } = useAuthContext();
+    const { setToken } = useAuthContext();
     const [userData, setUserData] = useState<UserLoginCredentials>({
         login: "",
         password: "",
@@ -14,16 +14,6 @@ const Login = () => {
     const loginUser = useLoginMutation();
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigate("/", { replace: true });
-        }
-    }, [isAuthenticated, navigate]);
-
-    if (isAuthenticated) {
-        return null;
-    }
 
     const handleLogin = (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();

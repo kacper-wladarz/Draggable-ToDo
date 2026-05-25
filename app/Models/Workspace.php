@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Database\Factories\ProjectFactory;
+use Database\Factories\WorkspaceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,14 +10,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Override;
 
 #[Fillable(["name", "user_id"])]
-class Project extends Model
+class Workspace extends Model
 {
     use HasFactory;
 
-    protected $table = "projects";
+    protected $table = "workspaces";
 
     protected $casts = [
         "name" => "string",
@@ -26,9 +25,9 @@ class Project extends Model
         "updated_at" => "datetime:c"
     ];
 
-    protected static function newFactory(): ProjectFactory
+    protected static function newFactory(): WorkspaceFactory
     {
-        return ProjectFactory::new();
+        return WorkspaceFactory::new();
     }
 
     public function user(): BelongsTo
@@ -47,6 +46,6 @@ class Project extends Model
                     fn(Builder $query) => $query->where("user_id", "=", $userId)
                 )
             ]
-        ]);
+        ], [], ["name" => "workspace name"]);
     }
 }

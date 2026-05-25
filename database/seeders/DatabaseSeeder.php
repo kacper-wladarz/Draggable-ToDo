@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Project;
+use App\Models\Workspace;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $users = User::factory(10)->create();
 
         foreach ($users as $user) {
-            Project::factory(4)->recycle($user)->create();
+            Workspace::factory(4)->recycle($user)->create();
         }
     }
 }

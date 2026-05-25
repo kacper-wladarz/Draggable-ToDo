@@ -1,4 +1,15 @@
+import { useEffect, useState } from "react";
+
 const LoaderIcon = () => {
+    const [visible, setVisible] = useState<boolean>();
+
+    useEffect(() => {
+        const timer = setTimeout(() => setVisible(true), 100);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (!visible) return null;
+
     return (
         <div
             className={`w-full h-full flex-1 flex justify-center items-center`}

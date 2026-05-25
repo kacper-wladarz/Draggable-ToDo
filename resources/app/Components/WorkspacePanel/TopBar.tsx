@@ -9,11 +9,12 @@ const TopBar = () => {
     const logoutMutation = useLogoutMutation();
     const navigate = useNavigate();
 
-    const logout = () => {
-        localStorage.removeItem("user_auth");
-        setToken(null);
-        navigate("/login");
-        logoutMutation.mutate();
+    const logout = async () => {
+        await logoutMutation.mutateAsync().finally(() => {
+            localStorage.removeItem("user_auth");
+            setToken(null);
+            navigate("/login");
+        });
     };
 
     return (

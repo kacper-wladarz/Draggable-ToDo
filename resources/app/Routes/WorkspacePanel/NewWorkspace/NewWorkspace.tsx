@@ -1,0 +1,61 @@
+import { SubmitEvent, useState } from "react";
+import { useCreateWorkspace } from "../../../Tanstack/Workspace/WorkspaceMutations";
+import FormInput from "../../../Components/WorkspacePanel/ResourceForm/FormInput";
+import FormActions from "../../../Components/WorkspacePanel/ResourceForm/FormActions";
+import FormConfirmButton from "../../../Components/WorkspacePanel/ResourceForm/FormConfirmButton";
+import FormClearButton from "../../../Components/WorkspacePanel/ResourceForm/FormClearButton";
+
+const NewWorkspace = () => {
+    const [newWorkspace, setNewWorkspace] = useState<NewWorkspace>({
+        name: "",
+    });
+    const [errors, setErrors] = useState<NewWorkspaceErrors>({});
+    const createWorkspace = useCreateWorkspace();
+
+    const clear = () => {
+        setNewWorkspace({
+            name: "",
+        });
+        setErrors({});
+    };
+
+    const handleCreateWorkspace = (event: SubmitEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        createWorkspace.mutate(newWorkspace, {
+            onSuccess: (res) => console.log(res),
+            onError: (err) => setErrors(err.data.errors),
+        });
+    };
+
+    return (
+        <form
+            className="p-10 flex flex-col gap-y-6"
+            onSubmit={handleCreateWorkspace}
+        >
+            <FormInput
+                label="Workspace name"
+                errors={errors.name}
+                type="text"
+                placeholder="Enter workspace name"
+                value={newWorkspace.name}
+                onChange={(event) =>
+                    setNewWorkspace((prev) => ({
+                        ...prev,
+                        name: event.target.value,
+                    }))
+                }
+            />
+            <FormActions>
+                <FormClearButton text={"Clear"} type="button" onClick={clear} />
+                <FormConfirmButton
+                    text={"Create"}
+                    type="submit"
+                    disabled={createWorkspace.isPending}
+                />
+            </FormActions>
+        </form>
+    );
+};
+
+export default NewWorkspace;

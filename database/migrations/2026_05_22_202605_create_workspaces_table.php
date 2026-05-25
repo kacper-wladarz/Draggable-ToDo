@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Project;
+use App\Models\Workspace;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create(modelTableName(Project::class), function (Blueprint $table) {
+        Schema::create(modelTableName(Workspace::class), function (Blueprint $table) {
             $table->id();
             $table->string("name", 255);
             $table->foreignId("user_id")->constrained(modelTableName(User::class), "id")->cascadeOnUpdate()->cascadeOnDelete();
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(modelTableName(Project::class));
+        Schema::dropIfExists(modelTableName(Workspace::class));
     }
 };

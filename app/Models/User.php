@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -48,6 +49,11 @@ class User extends Authenticatable
         ];
     }
 
+    public static function superuser(): User
+    {
+        return self::query()->where("login", "=", "superuser")->first();
+    }
+
     public static function validateLogin(array $data): array
     {
         return Validator::validate($data, [
@@ -60,13 +66,13 @@ class User extends Authenticatable
     {
         return Validator::validate($data, [
             "name" => ["required", "string", "max:255"],
-            "login" => ["required", "string", "unique:users,login", "max:255"],
+            "login" => ["required", "string", Rule::unique(modelValidationPrefix(self::class)), "max:255"],
             "password" => ["required", "string", "min:8", "max:255", "confirmed"],
         ], [], ["name" => "nickname"]);
     }
 
-    public function projects(): HasMany
+    public function workspaces(): HasMany
     {
-        return $this->hasMany(Project::class, "user_id", "id");
+        return $this->hasMany(Workspace::class, "user_id", "id");
     }
 }

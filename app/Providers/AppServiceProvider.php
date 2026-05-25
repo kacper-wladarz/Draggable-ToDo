@@ -2,23 +2,23 @@
 
 namespace App\Providers;
 
-use App\Repositories\Project\ProjectRepository;
-use App\Repositories\Project\ProjectRepositoryInterface;
+use App\Repositories\Workspace\WorkspaceRepository;
+use App\Repositories\Workspace\WorkspaceRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\User\UserRepository;
 use App\Repositories\User\UserRepositoryInterface;
-use App\Services\Project\ProjectService;
-use App\Services\Project\ProjectServiceInterface;
+use App\Services\Workspace\WorkspaceService;
+use App\Services\Workspace\WorkspaceServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
     private array $services = [
-        ProjectServiceInterface::class =>  ProjectService::class
+        WorkspaceServiceInterface::class =>  WorkspaceService::class
     ];
 
     private array $repositories = [
         UserRepositoryInterface::class => UserRepository::class,
-        ProjectRepositoryInterface::class => ProjectRepository::class
+        WorkspaceRepositoryInterface::class => WorkspaceRepository::class
     ];
 
     /**

@@ -35,5 +35,7 @@ class PrepareDatabaseForTests extends Command
         $this->call("optimize:clear");
 
         $this->info("The test database is prepared for use.");
+
+        return Command::SUCCESS;
     }
 }
