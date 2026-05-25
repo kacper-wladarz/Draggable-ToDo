@@ -32,6 +32,8 @@ class User extends Authenticatable
     use HasFactory, HasApiTokens;
 
     protected $table = "users";
+    protected $primaryKey = "id";
+    public $incrementing = true;
 
     /**
      * Get the attributes that should be cast.

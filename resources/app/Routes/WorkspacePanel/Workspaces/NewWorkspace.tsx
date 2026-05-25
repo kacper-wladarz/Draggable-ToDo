@@ -1,9 +1,9 @@
 import { SubmitEvent, useState } from "react";
 import { useCreateWorkspace } from "../../../Tanstack/Workspace/WorkspaceMutations";
-import FormInput from "../../../Components/WorkspacePanel/ResourceForm/FormInput";
 import FormActions from "../../../Components/WorkspacePanel/ResourceForm/FormActions";
-import FormConfirmButton from "../../../Components/WorkspacePanel/ResourceForm/FormConfirmButton";
 import FormClearButton from "../../../Components/WorkspacePanel/ResourceForm/FormClearButton";
+import FormConfirmButton from "../../../Components/WorkspacePanel/ResourceForm/FormConfirmButton";
+import FormInput from "../../../Components/WorkspacePanel/ResourceForm/FormInput";
 
 const NewWorkspace = () => {
     const [newWorkspace, setNewWorkspace] = useState<NewWorkspace>({
@@ -21,6 +21,7 @@ const NewWorkspace = () => {
 
     const handleCreateWorkspace = (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setErrors({});
 
         createWorkspace.mutate(newWorkspace, {
             onSuccess: (res) => console.log(res),
@@ -34,7 +35,7 @@ const NewWorkspace = () => {
             onSubmit={handleCreateWorkspace}
         >
             <FormInput
-                label="Workspace name"
+                label="Project name"
                 errors={errors.name}
                 type="text"
                 placeholder="Enter workspace name"

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\WorkspaceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,9 +15,11 @@ use Illuminate\Validation\Rule;
 #[Fillable(["name", "user_id"])]
 class Workspace extends Model
 {
-    use HasFactory;
+    use HasUuids, HasFactory;
 
     protected $table = "workspaces";
+    protected $primaryKey = "uuid";
+    public $incrementing = false;
 
     protected $casts = [
         "name" => "string",

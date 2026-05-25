@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useState } from "react";
+import { InputHTMLAttributes, useMemo, useRef, useState } from "react";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
@@ -7,6 +7,13 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 
 const FormInput = ({ label, errors, ...props }: Props) => {
     const [isInputActive, setIsInputActive] = useState<boolean>(false);
+    const errorRef = useRef<string | null>(null);
+    const error = useMemo(() => {
+        if (errors && errors[0]) errorRef.current = errors[0];
+        return errorRef.current;
+    }, [errors]);
+
+    const isOpen = !!(errors && errors[0]);
 
     return (
         <div className="flex items-center gap-x-3">
@@ -26,9 +33,9 @@ const FormInput = ({ label, errors, ...props }: Props) => {
                 ></div>
             </div>
             <span
-                className={`auto_size ${errors && errors[0] ? "h-auto" : "h-0"} transition-all duration-300 overflow-hidden text-red-600/80 font-medium`}
+                className={`auto_size ${error && isOpen ? "h-auto" : "h-0"} transition-all duration-150 overflow-hidden text-orange-500 font-medium`}
             >
-                {(errors && errors[0]) || "\u00A0"}
+                {error || "\u00A0"}
             </span>
         </div>
     );
