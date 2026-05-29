@@ -27,7 +27,7 @@ const SortableWorkspaceItem = ({ workspace, index }: Props) => {
             >
                 {workspace.name}
             </Link>
-            <span ref={handleRef} className="px-2s">
+            <span ref={handleRef} className="px-2 cursor-grab">
                 <GripVertical size={20} />
             </span>
         </li>

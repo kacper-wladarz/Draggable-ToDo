@@ -1,7 +1,12 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import { useWorkspaces } from "../../Tanstack/Workspace/WorkspaceQueries";
 import { useAuthContext } from "../Auth/AuthContext";
-import { useQueryClient } from "@tanstack/react-query";
 
 const WorkspaceContext = createContext<WorkspaceContext>(
     {} as WorkspaceContext,
@@ -12,19 +17,23 @@ export const WorkspaceContextProvider = ({
 }: {
     children: ReactNode;
 }) => {
-    const queryClient = useQueryClient();
     const { user } = useAuthContext();
     const [openedWorkspaceUuid, setOpenedWorkspaceUuid] = useState<
         string | null
     >(null);
 
-    const { data: workspacesList = [], isLoading } = useWorkspaces(!!user);
+    const { data: rawWorkspacesList = [] } = useWorkspaces(!!user);
+
+    const [workspacesList, setWorkspacesList] = useState<Workspace[]>([]);
+
+    useEffect(() => {
+        setWorkspacesList(
+            rawWorkspacesList.sort((a, b) => b.position - a.position),
+        );
+    }, [rawWorkspacesList]);
 
     const addWorkspaceToList = (workspace: Workspace) => {
-        queryClient.setQueryData<Workspace[]>(["workspaces"], (prev) => {
-            if (!prev) return [workspace];
-            return [workspace, ...prev];
-        });
+        setWorkspacesList((prev) => [workspace, ...prev]);
     };
 
     return (
@@ -33,8 +42,8 @@ export const WorkspaceContextProvider = ({
                 openedWorkspaceUuid,
                 setOpenedWorkspaceUuid,
                 workspacesList,
+                setWorkspacesList,
                 addWorkspaceToList,
-                isLoading,
             }}
         >
             {children}
@@ -44,12 +53,9 @@ export const WorkspaceContextProvider = ({
 
 export const useWorkspaceContext = () => {
     const context = useContext(WorkspaceContext);
-
-    if (!context) {
+    if (!context)
         throw new Error(
             "useWorkspaceContext must be used within a WorkspaceContextProvider",
         );
-    }
-
     return context;
 };

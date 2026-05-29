@@ -1,14 +1,19 @@
 import { Navigate, Outlet } from "react-router";
 import { useAuthContext } from "../../Providers/Auth/AuthContext";
-import { useLoadingContext } from "../../Providers/Loading/LoadingContext";
+import FadeIn from "../Animations/FadeIn";
 
 const GuessRoute = () => {
-    const { user } = useAuthContext();
-    const { isAppLoading } = useLoadingContext();
+    const { user, token } = useAuthContext();
 
-    if (isAppLoading) return null;
+    if (token && user) {
+        return <Navigate to="/" replace />;
+    }
 
-    return !!user ? <Navigate to={"/"} replace /> : <Outlet />;
+    return (
+        <FadeIn>
+            <Outlet />
+        </FadeIn>
+    );
 };
 
 export default GuessRoute;

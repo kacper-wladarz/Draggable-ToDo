@@ -1,14 +1,19 @@
 import { Navigate, Outlet } from "react-router";
 import { useAuthContext } from "../../Providers/Auth/AuthContext";
-import { useLoadingContext } from "../../Providers/Loading/LoadingContext";
+import FadeIn from "../Animations/FadeIn";
 
 const ProtectedRoute = () => {
-    const { user } = useAuthContext();
-    const { isAppLoading } = useLoadingContext();
+    const { user, token } = useAuthContext();
 
-    if (isAppLoading) return null;
+    if (!token || !user) {
+        return <Navigate to="/login" replace />;
+    }
 
-    return user ? <Outlet /> : <Navigate to={"/login"} replace />;
+    return (
+        <FadeIn>
+            <Outlet />
+        </FadeIn>
+    );
 };
 
 export default ProtectedRoute;

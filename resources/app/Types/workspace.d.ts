@@ -19,8 +19,8 @@ interface WorkspaceContext {
     openedWorkspaceUuid: string | null
     setOpenedWorkspaceUuid: React.Dispatch<React.SetStateAction<string | null>>
     workspacesList: Workspace[]
+    setWorkspacesList: React.Dispatch<React.SetStateAction<Workspace[]>>
     addWorkspaceToList: (workspace: Workspace) => void
-    isLoading: boolean
 }
 
 interface ChangeWorkspacePosition {
