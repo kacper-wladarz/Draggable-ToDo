@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuthContext } from "../../Providers/Auth/AuthContext";
 import { useLoginMutation } from "../../Tanstack/Auth/AuthMutations";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import LoginPageInput from "../../Components/AuthPage/LoginPageInput";
 import LoginPageSubmitButton from "../../Components/AuthPage/LoginPageSubmitButton";
 
@@ -12,7 +12,6 @@ const Login = () => {
         password: "",
     });
     const loginUser = useLoginMutation();
-    const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
 
     const handleLogin = (event: React.SubmitEvent<HTMLFormElement>) => {
@@ -21,9 +20,7 @@ const Login = () => {
 
         loginUser.mutate(userData, {
             onSuccess: (res) => {
-                localStorage.setItem("user_auth", res.data.token);
                 setToken(res.data.token);
-                navigate("/");
             },
             onError: (error) => {
                 setError(error.data.message);

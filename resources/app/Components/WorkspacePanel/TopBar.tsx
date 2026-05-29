@@ -11,28 +11,31 @@ const TopBar = () => {
 
     const logout = async () => {
         await logoutMutation.mutateAsync().finally(() => {
-            localStorage.removeItem("user_auth");
             setToken(null);
             navigate("/login");
         });
     };
 
     return (
-        <div className="w-full bg-[#151516] h-16 border border-b-white/10 flex items-center justify-end px-4">
+        <div className="w-full bg-[#151516] h-16 border-b border-b-white/10 flex items-center justify-end px-4">
             <div
                 className="flex items-center gap-x-2 relative cursor-pointer"
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
             >
-                <div className="w-9 h-9 bg-orange-500 rounded-full flex justify-center items-center text-lg text-white font-medium">
-                    {user?.name.charAt(0).toUpperCase()}
-                </div>
-                <div className="flex flex-col">
-                    <span className="text-white">{user?.name}</span>
-                    <span className="text-white/50 text-sm font-light">
-                        @{user?.login}
-                    </span>
-                </div>
+                {user && (
+                    <>
+                        <div className="w-9 h-9 bg-orange-500 rounded-full flex justify-center items-center text-lg text-white font-medium">
+                            {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-white">{user?.name}</span>
+                            <span className="text-white/50 text-sm font-light">
+                                @{user.login}
+                            </span>
+                        </div>
+                    </>
+                )}
                 <div
                     className={`auto_size absolute top-full w-full pt-1 ${isOpen ? "h-auto" : "h-0"} overflow-hidden transition-[height] duration-200`}
                 >

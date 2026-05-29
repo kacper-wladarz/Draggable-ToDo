@@ -16,6 +16,9 @@ Route::name("api.")->group(function () {
         ->prefix("workspaces")
         ->name("workspaces.")
         ->group(function () {
+            Route::get("/", [WorkspaceController::class, "index"])->name("get");
+            Route::get("/{workspace}", [WorkspaceController::class, "show"])->name("show");
             Route::post("/", [WorkspaceController::class, "store"])->name("store");
+            Route::patch("/{workspace}/position", [WorkspaceController::class, "changeWorkspacePosition"])->name("change-position");
         });
 });

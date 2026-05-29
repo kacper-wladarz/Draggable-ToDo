@@ -4,6 +4,8 @@ import FormActions from "../../../Components/WorkspacePanel/ResourceForm/FormAct
 import FormClearButton from "../../../Components/WorkspacePanel/ResourceForm/FormClearButton";
 import FormConfirmButton from "../../../Components/WorkspacePanel/ResourceForm/FormConfirmButton";
 import FormInput from "../../../Components/WorkspacePanel/ResourceForm/FormInput";
+import { useNavigate } from "react-router";
+import { useWorkspaceContext } from "../../../Providers/Workspace/WorkspaceContext";
 
 const NewWorkspace = () => {
     const [newWorkspace, setNewWorkspace] = useState<NewWorkspace>({
@@ -11,6 +13,8 @@ const NewWorkspace = () => {
     });
     const [errors, setErrors] = useState<NewWorkspaceErrors>({});
     const createWorkspace = useCreateWorkspace();
+    const navigate = useNavigate();
+    const { addWorkspaceToList } = useWorkspaceContext();
 
     const clear = () => {
         setNewWorkspace({
@@ -24,7 +28,10 @@ const NewWorkspace = () => {
         setErrors({});
 
         createWorkspace.mutate(newWorkspace, {
-            onSuccess: (res) => console.log(res),
+            onSuccess: (workspace) => {
+                addWorkspaceToList(workspace);
+                navigate(`/workspaces/${workspace.uuid}`);
+            },
             onError: (err) => setErrors(err.data.errors),
         });
     };

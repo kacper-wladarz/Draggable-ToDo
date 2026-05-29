@@ -1,0 +1,3 @@
+interface LoadingContext {
+    isAppLoading: boolean
+}

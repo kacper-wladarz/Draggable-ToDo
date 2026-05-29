@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Repositories\Workspace\WorkspaceRepositoryInterface;
+use Carbon\Carbon;
 use Database\Factories\WorkspaceFactory;
+use Exception;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +15,17 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-#[Fillable(["name", "user_id"])]
+/**
+ * @property int $id
+ * @property string $name
+ * @property int $user_id
+ * @property int $position
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * 
+ * @property User $user
+ */
+#[Fillable(["name", "user_id", "position"])]
 class Workspace extends Model
 {
     use HasUuids, HasFactory;
@@ -24,6 +37,7 @@ class Workspace extends Model
     protected $casts = [
         "name" => "string",
         "user_id" => "integer",
+        "position" => "integer",
         "created_at" => "datetime:c",
         "updated_at" => "datetime:c"
     ];
@@ -50,5 +64,45 @@ class Workspace extends Model
                 )
             ]
         ], [], ["name" => "workspace name"]);
+    }
+
+    public static function validateChangePosition(array $data, int $userId, Workspace $workspace)
+    {
+        $workspacesCount = self::query()->where("user_id", "=", $userId)->count();
+
+        return Validator::validate($data, [
+            "position_from" => [
+                "required",
+                "integer",
+                "between:0," . ($workspacesCount - 1),
+                function ($attribute, $value, $fail) use ($workspace) {
+                    if ($workspace->position !== $value) {
+                        $fail("The position_from does not match the current workspace position");
+                    }
+                }
+            ],
+            "position_to" => [
+                "required",
+                "integer",
+                "between:0," . ($workspacesCount - 1),
+                "different:position_from"
+            ]
+        ]);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+
+        self::creating(function (self $workspace) {
+            $count = resolve(WorkspaceRepositoryInterface::class)->getCountOfUserWorkspaces($workspace->user_id);
+
+            if (!($count < 255)) {
+                throw new Exception("The maximum number of workspaces has been reached");
+            }
+
+            $workspace->position = $count;
+        });
     }
 }

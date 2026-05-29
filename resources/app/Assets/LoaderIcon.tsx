@@ -1,8 +1,6 @@
 const LoaderIcon = () => {
     return (
-        <div
-            className={`w-full h-full flex-1 flex justify-center items-center`}
-        >
+        <div className="w-full h-full flex justify-center items-center">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={64}

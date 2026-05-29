@@ -4,13 +4,11 @@ namespace Database\Seeders;
 
 use App\Models\Workspace;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
@@ -19,7 +17,14 @@ class DatabaseSeeder extends Seeder
         $users = User::factory(10)->create();
 
         foreach ($users as $user) {
-            Workspace::factory(4)->recycle($user)->create();
+            Workspace::withoutEvents(function () use ($user) {
+                Workspace::factory(4)->recycle($user)->create();
+            });
         }
+
+        Workspace::factory(6)
+            ->state(new Sequence(fn(Sequence $sequence) => ["name" => "Project " . $sequence->index + 1]))
+            ->recycle(User::superuser())
+            ->create();
     }
 }

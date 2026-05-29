@@ -1,26 +1,46 @@
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import {
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import { useAuthQuery } from "../../Tanstack/Auth/AuthQueries";
-import LoaderIcon from "../../Assets/LoaderIcon";
+import { useQueryClient } from "@tanstack/react-query";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
+    const queryClient = useQueryClient();
     const [token, setToken] = useState<string | null>(
-        localStorage.getItem("user_auth") || "",
+        localStorage.getItem("user_auth") || null,
     );
-    const isAuthenticated = useMemo(() => !!token, [token]);
-    const { data: user, isLoading } = useAuthQuery(!!token);
+    const { data: user = null, isLoading } = useAuthQuery(!!token);
 
-    if (isLoading || (isAuthenticated && !user)) {
-        return <LoaderIcon />;
-    }
+    const setTokenState = (newToken: string | null) => {
+        if (newToken) {
+            localStorage.setItem("user_auth", newToken);
+        } else {
+            localStorage.removeItem("user_auth");
+            queryClient.clear();
+        }
+
+        setToken(newToken);
+    };
+
+    useEffect(() => {
+        const handler = () => setTokenState(null);
+        window.addEventListener("unauthorized", handler);
+
+        return () => window.removeEventListener("unauthorized", handler);
+    }, []);
 
     return (
         <AuthContext.Provider
             value={{
                 token,
-                setToken,
-                isAuthenticated,
+                setToken: setTokenState,
+                isLoading: !!token && isLoading,
                 user: user
                     ? {
                           id: user.id,

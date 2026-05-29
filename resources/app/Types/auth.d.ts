@@ -1,6 +1,6 @@
 interface AuthContextType {
     token: string | null;
-    setToken: React.Dispatch<React.SetStateAction<string | null>>;
-    isAuthenticated: boolean;
+    setToken: (newToken: string | null) => void
+    isLoading: boolean
     user: UserData | null;
 }

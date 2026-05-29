@@ -7,6 +7,5 @@ export const useAuthQuery = (enabled: boolean = true) => {
         queryFn: async () => await api.get("/auth/me").then((res) => res.data.user),
         enabled,
         staleTime: 0,
-        refetchOnWindowFocus: false
     })
 }

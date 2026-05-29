@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Sanctum\HasApiTokens;
@@ -22,8 +23,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $password
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * 
+ * @property Collection<Workspace> $workspaces
  */
-
 #[Fillable(["name", "login", "password"])]
 #[Hidden(["password"])]
 class User extends Authenticatable

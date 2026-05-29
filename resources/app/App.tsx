@@ -1,14 +1,15 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router";
-import Loadable from "./Components/LoadableRoute";
+import Loadable from "./Components/Loadable";
 import GuessRoute from "./Components/Routing/GuessRoute";
 import ProtectedRoute from "./Components/Routing/ProtectedRoute";
 import { AuthContextProvider } from "./Providers/Auth/AuthContext";
-import SingleWorkspace from "./Routes/WorkspacePanel/Workspaces/SingleWorkspace";
+import { WorkspaceContextProvider } from "./Providers/Workspace/WorkspaceContext";
+import { LoadingContextProvider } from "./Providers/Loading/LoadingContext";
 
 const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: 0 } },
+    defaultOptions: { queries: { retry: 0, refetchOnWindowFocus: false } },
 });
 
 const WorkspacePanel = Loadable(
@@ -19,6 +20,9 @@ const WorkspaceIndex = Loadable(
 );
 const NewWorkspace = Loadable(
     lazy(() => import("./Routes/WorkspacePanel/Workspaces/NewWorkspace")),
+);
+const SingleWorkspace = Loadable(
+    lazy(() => import("./Routes/WorkspacePanel/Workspaces/SingleWorkspace")),
 );
 const Login = Loadable(lazy(() => import("./Routes/Login/Login")));
 const Registration = Loadable(
@@ -45,7 +49,7 @@ const router = createBrowserRouter([
                                 element: <NewWorkspace />,
                             },
                             {
-                                path: ":workspaceUUID",
+                                path: ":workspaceUuid",
                                 element: <SingleWorkspace />,
                             },
                         ],
@@ -73,7 +77,11 @@ const App = () => {
     return (
         <QueryClientProvider client={queryClient}>
             <AuthContextProvider>
-                <RouterProvider router={router} />
+                <WorkspaceContextProvider>
+                    <LoadingContextProvider>
+                        <RouterProvider router={router} />
+                    </LoadingContextProvider>
+                </WorkspaceContextProvider>
             </AuthContextProvider>
         </QueryClientProvider>
     );

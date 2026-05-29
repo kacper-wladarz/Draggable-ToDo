@@ -22,6 +22,20 @@ class WorkspaceControllerTest extends TestCase
     }
 
     #[Test]
+    public function index(): void
+    {
+        $user = User::factory()->createOne();
+
+        Workspace::factory(10)->recycle($user)->create();
+
+        $this->actingAs($user);
+
+        $this->json("GET", route("api.workspaces.get"))
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonCount(10);
+    }
+
+    #[Test]
     public function itStoresNewWorkspacet(): void
     {
         $data = [
@@ -48,5 +62,36 @@ class WorkspaceControllerTest extends TestCase
         Workspace::factory()->recycle($this->user)->createOne(["name" => $data["name"]]);
 
         $this->json("POST", route("api.workspaces.store"), $data)->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    #[Test]
+    public function show()
+    {
+        $user = User::factory()->createOne();
+
+        $workspace = Workspace::factory()
+            ->recycle($user)
+            ->createOne(["name" => "Workspace 1"]);
+
+        $this->actingAs($user);
+
+        $this->json(
+            "GET",
+            route("api.workspaces.show", ["workspaceUuid" => $workspace->uuid])
+        )
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                "uuid",
+                "name",
+                "user_id",
+                "position",
+                "created_at",
+                "updated_at"
+            ])
+            ->assertJsonFragment([
+                "uuid" => $workspace->uuid,
+                "name" => "Workspace 1",
+                "user_id" => $user->id
+            ]);
     }
 }

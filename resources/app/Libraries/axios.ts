@@ -13,8 +13,7 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use((response) => response, (error) => {
     if (error.response.status === 401) {
-        localStorage.removeItem("user_auth")
-        window.location.href = "/"
+        window.dispatchEvent(new Event("unauthorized"))
     }
 
     return Promise.reject(error.response || error);

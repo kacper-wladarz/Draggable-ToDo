@@ -23,6 +23,18 @@ class WorkspaceRepositoryTest extends TestCase
     }
 
     #[Test]
+    public function getUserWorkspaces(): void
+    {
+        $user = User::factory()->createOne();
+
+        Workspace::factory(10)->recycle($user)->create();
+
+        $result = $this->workspaceRepository->getUserWorkspaces($user->id);
+
+        $this->assertCount(10, $result);
+    }
+
+    #[Test]
     public function itCreatesNewWorkspace(): void
     {
         $user = User::factory()->createOne();
@@ -37,7 +49,7 @@ class WorkspaceRepositoryTest extends TestCase
         $this->assertInstanceOf(Workspace::class, $result);
         $this->assertEquals($data["name"], $result->name);
         $this->assertDatabaseHas(modelTableName(Workspace::class), [
-            "id" => $result->id,
+            "uuid" => $result->uuid,
             "name" => $data["name"],
             "user_id" => $user->id
         ]);
