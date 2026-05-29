@@ -1,10 +1,4 @@
-import {
-    createContext,
-    ReactNode,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { useAuthQuery } from "../../Tanstack/Auth/AuthQueries";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -12,10 +6,12 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const queryClient = useQueryClient();
-    const [token, setToken] = useState<string | null>(
-        localStorage.getItem("user_auth") || null,
+
+    const [token, setToken] = useState<string | null>(() =>
+        localStorage.getItem("user_auth"),
     );
-    const { data: user = null, isLoading } = useAuthQuery(!!token);
+
+    const { data: user } = useAuthQuery(token);
 
     const setTokenState = (newToken: string | null) => {
         if (newToken) {
@@ -24,23 +20,14 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             localStorage.removeItem("user_auth");
             queryClient.clear();
         }
-
         setToken(newToken);
     };
-
-    useEffect(() => {
-        const handler = () => setTokenState(null);
-        window.addEventListener("unauthorized", handler);
-
-        return () => window.removeEventListener("unauthorized", handler);
-    }, []);
 
     return (
         <AuthContext.Provider
             value={{
                 token,
                 setToken: setTokenState,
-                isLoading: !!token && isLoading,
                 user: user
                     ? {
                           id: user.id,
@@ -59,12 +46,9 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuthContext = () => {
     const context = useContext(AuthContext);
-
-    if (!context) {
+    if (!context)
         throw new Error(
             "useAuthContext must be used within an AuthContextProvider",
         );
-    }
-
     return context;
 };

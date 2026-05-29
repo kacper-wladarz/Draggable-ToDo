@@ -69,4 +69,82 @@ class WorkspaceServiceTest extends TestCase
         $this->expectException(ValidationException::class);
         $this->workspaceService->store($data, $user->id);
     }
+
+    #[Test]
+    public function changePositionWorksWhenEndPositionIsHigher(): void
+    {
+        $user = User::superuser();
+
+        for ($i = 0; $i < 10; $i++) {
+            Workspace::factory()->recycle($user)->createOne(["position" => $i]);
+        }
+
+        $workspace = $user->workspaces()->where("position", "=", 0)->first();
+
+        $randomHigherPosition = random_int(1, 9);
+
+        $lowerWorkspaces = $user->workspaces
+            ->where("position", "=<", $randomHigherPosition)
+            ->where("position", "!=", 0);
+
+        $this->workspaceService->changePosition(
+            $workspace,
+            [
+                "position_from" => $workspace->position,
+                "position_to" => $randomHigherPosition
+            ],
+            $user->id
+        );
+
+        $this->assertDatabaseHas(modelTableName($workspace::class), [
+            "uuid" => $workspace->uuid,
+            "position" => $randomHigherPosition
+        ]);
+
+        foreach ($lowerWorkspaces as $workspace) {
+            $this->assertDatabaseHas(modelTableName($workspace::class), [
+                "uuid" => $workspace->uuid,
+                "position" => $workspace->position - 1
+            ]);
+        }
+    }
+
+    #[Test]
+    public function changePositionWorksWhenEndPositionIsLower(): void
+    {
+        $user = User::superuser();
+
+        for ($i = 0; $i < 10; $i++) {
+            Workspace::factory()->recycle($user)->createOne(["position" => $i]);
+        }
+
+        $workspace = $user->workspaces()->where("position", "=", 9)->first();
+
+        $randomHigherPosition = random_int(0, 8);
+
+        $lowerWorkspaces = $user->workspaces
+            ->where("position", ">=", $randomHigherPosition)
+            ->where("position", "!=", 9);
+
+        $this->workspaceService->changePosition(
+            $workspace,
+            [
+                "position_from" => $workspace->position,
+                "position_to" => $randomHigherPosition
+            ],
+            $user->id
+        );
+
+        $this->assertDatabaseHas(modelTableName($workspace::class), [
+            "uuid" => $workspace->uuid,
+            "position" => $randomHigherPosition
+        ]);
+
+        foreach ($lowerWorkspaces as $workspace) {
+            $this->assertDatabaseHas(modelTableName($workspace::class), [
+                "uuid" => $workspace->uuid,
+                "position" => $workspace->position + 1
+            ]);
+        }
+    }
 }

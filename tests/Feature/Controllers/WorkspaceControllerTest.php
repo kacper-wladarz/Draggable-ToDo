@@ -36,7 +36,7 @@ class WorkspaceControllerTest extends TestCase
     }
 
     #[Test]
-    public function itStoresNewWorkspacet(): void
+    public function itStoresNewWorkspace(): void
     {
         $data = [
             "name" => "Workspace 1"
@@ -65,7 +65,7 @@ class WorkspaceControllerTest extends TestCase
     }
 
     #[Test]
-    public function show()
+    public function show(): void
     {
         $user = User::factory()->createOne();
 
@@ -77,7 +77,7 @@ class WorkspaceControllerTest extends TestCase
 
         $this->json(
             "GET",
-            route("api.workspaces.show", ["workspaceUuid" => $workspace->uuid])
+            route("api.workspaces.show", ["workspace" => $workspace])
         )
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure([
@@ -93,5 +93,67 @@ class WorkspaceControllerTest extends TestCase
                 "name" => "Workspace 1",
                 "user_id" => $user->id
             ]);
+    }
+
+    #[Test]
+    public function changeWorkspacePositionToHigherPosition(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            Workspace::factory()->recycle($this->user)->createOne(["position" => $i]);
+        }
+
+        $workspace = $this->user->workspaces()->where("position", "=", 0)->first();
+
+        $randomHigherPosition = random_int(1, 9);
+
+        $this->json(
+            "PATCH",
+            route("api.workspaces.change-position", ["workspace" => $workspace]),
+            ["position_from" => $workspace->position, "position_to" => $randomHigherPosition]
+        )->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseHas(modelTableName($workspace::class), [
+            "uuid" => $workspace->uuid,
+            "position" => $randomHigherPosition
+        ]);
+    }
+
+    #[Test]
+    public function changeWorkspacePositionToLowerPosition(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            Workspace::factory()->recycle($this->user)->createOne(["position" => $i]);
+        }
+
+        $workspace = $this->user->workspaces()->where("position", "=", 9)->first();
+
+        $randomHigherPosition = random_int(0, 8);
+
+        $this->json(
+            "PATCH",
+            route("api.workspaces.change-position", ["workspace" => $workspace]),
+            ["position_from" => $workspace->position, "position_to" => $randomHigherPosition]
+        )->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseHas(modelTableName($workspace::class), [
+            "uuid" => $workspace->uuid,
+            "position" => $randomHigherPosition
+        ]);
+    }
+
+    #[Test]
+    public function changePositionThrowsErrorWhenPositionAreTheSame(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            Workspace::factory()->recycle($this->user)->createOne(["position" => $i]);
+        }
+
+        $workspace = $this->user->workspaces()->where("position", "=", 9)->first();
+
+        $this->json(
+            "PATCH",
+            route("api.workspaces.change-position", ["workspace" => $workspace]),
+            ["position_from" => 1, "position_to" => 1]
+        )->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
