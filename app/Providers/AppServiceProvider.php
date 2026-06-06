@@ -2,33 +2,22 @@
 
 namespace App\Providers;
 
-use App\Repositories\Workspace\WorkspaceRepository;
-use App\Repositories\Workspace\WorkspaceRepositoryInterface;
+use App\Models\Workspace;
+use App\Policies\WorkspacePolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use App\Repositories\User\UserRepository;
-use App\Repositories\User\UserRepositoryInterface;
-use App\Services\Workspace\WorkspaceService;
-use App\Services\Workspace\WorkspaceServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
-    private array $services = [
-        WorkspaceServiceInterface::class =>  WorkspaceService::class
-    ];
-
-    private array $repositories = [
-        UserRepositoryInterface::class => UserRepository::class,
-        WorkspaceRepositoryInterface::class => WorkspaceRepository::class
-    ];
-
     /**
      * Register any application services.
      */
     public function register(): void
     {
-        foreach (array_merge($this->services, $this->repositories) as $interface => $class) {
-            $this->app->singleton($interface, $class);
-        }
+        $singletonServices = require app_path("Providers/Interfaces/Singletons/services.php");
+        $singletonRepositories = require app_path("Providers/Interfaces/Singletons/repositories.php");
+
+        $this->singletons = array_merge($singletonServices, $singletonRepositories);
     }
 
     /**
@@ -36,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::policy(Workspace::class, WorkspacePolicy::class);
     }
 }

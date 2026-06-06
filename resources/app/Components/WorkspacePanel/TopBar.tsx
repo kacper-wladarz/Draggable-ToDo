@@ -17,7 +17,7 @@ const TopBar = () => {
     };
 
     return (
-        <div className="w-full bg-[#151516] h-16 border-b border-b-white/10 flex items-center justify-end px-4">
+        <div className="w-full bg-[#151516] h-16 border-b border-b-white/10 flex items-center justify-end px-4 shrink-0">
             <div
                 className="flex items-center gap-x-2 relative cursor-pointer"
                 onMouseEnter={() => setIsOpen(true)}

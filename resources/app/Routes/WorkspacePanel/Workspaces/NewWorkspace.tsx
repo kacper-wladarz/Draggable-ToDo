@@ -1,13 +1,14 @@
 import { SubmitEvent, useState } from "react";
 import { useCreateWorkspace } from "../../../Tanstack/Workspace/WorkspaceMutations";
-import FormActions from "../../../Components/WorkspacePanel/ResourceForm/FormActions";
-import FormClearButton from "../../../Components/WorkspacePanel/ResourceForm/FormClearButton";
-import FormConfirmButton from "../../../Components/WorkspacePanel/ResourceForm/FormConfirmButton";
-import FormInput from "../../../Components/WorkspacePanel/ResourceForm/FormInput";
 import { useNavigate } from "react-router";
 import { useWorkspaceContext } from "../../../Providers/Workspace/WorkspaceContext";
+import { useQueryClient } from "@tanstack/react-query";
+import Animations from "../../../Components/Animations";
+import Form from "../../../Components/WorkspacePanel/ResourceForm";
 
 const NewWorkspace = () => {
+    const queryClient = useQueryClient();
+
     const [newWorkspace, setNewWorkspace] = useState<NewWorkspace>({
         name: "",
     });
@@ -30,39 +31,47 @@ const NewWorkspace = () => {
         createWorkspace.mutate(newWorkspace, {
             onSuccess: (workspace) => {
                 addWorkspaceToList(workspace);
+                queryClient.invalidateQueries({
+                    queryKey: ["workspaces", true],
+                });
                 navigate(`/workspaces/${workspace.uuid}`);
             },
-            onError: (err) => setErrors(err.data.errors),
+            onError: (err) => {
+                setErrors(err.data.errors);
+            },
         });
     };
 
     return (
-        <form
-            className="p-10 flex flex-col gap-y-6"
-            onSubmit={handleCreateWorkspace}
-        >
-            <FormInput
-                label="Project name"
-                errors={errors.name}
-                type="text"
-                placeholder="Enter workspace name"
-                value={newWorkspace.name}
-                onChange={(event) =>
-                    setNewWorkspace((prev) => ({
-                        ...prev,
-                        name: event.target.value,
-                    }))
-                }
-            />
-            <FormActions>
-                <FormClearButton text={"Clear"} type="button" onClick={clear} />
-                <FormConfirmButton
-                    text={"Create"}
-                    type="submit"
-                    disabled={createWorkspace.isPending}
+        <Animations.FadeIn>
+            <Form onSubmit={handleCreateWorkspace}>
+                <Form.Input
+                    label="Project name"
+                    errors={errors.name}
+                    type="text"
+                    placeholder="Enter workspace name"
+                    value={newWorkspace.name}
+                    onChange={(event) =>
+                        setNewWorkspace((prev) => ({
+                            ...prev,
+                            name: event.target.value,
+                        }))
+                    }
                 />
-            </FormActions>
-        </form>
+                <Form.Actions>
+                    <Form.BorderButton
+                        text={"Clear"}
+                        type="button"
+                        onClick={clear}
+                    />
+                    <Form.BorderButton
+                        text={"Create"}
+                        type="submit"
+                        disabled={createWorkspace.isPending}
+                    />
+                </Form.Actions>
+            </Form>
+        </Animations.FadeIn>
     );
 };
 

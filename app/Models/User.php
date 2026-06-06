@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -33,9 +31,9 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasApiTokens;
 
+    public $incrementing = true;
     protected $table = "users";
     protected $primaryKey = "id";
-    public $incrementing = true;
 
     /**
      * Get the attributes that should be cast.
@@ -78,5 +76,10 @@ class User extends Authenticatable
     public function workspaces(): HasMany
     {
         return $this->hasMany(Workspace::class, "user_id", "id");
+    }
+
+    public function isSuperuser(): bool
+    {
+        return $this->login === "superuser";
     }
 }

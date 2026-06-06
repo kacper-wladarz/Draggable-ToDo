@@ -5,6 +5,8 @@ namespace App\Services\Workspace;
 use App\Enums\OrderByEnum;
 use App\Models\Workspace;
 use App\Repositories\Workspace\WorkspaceRepositoryInterface;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 class WorkspaceService implements WorkspaceServiceInterface
@@ -23,6 +25,24 @@ class WorkspaceService implements WorkspaceServiceInterface
         $validated["user_id"] = $userId;
 
         return $this->workspaceRepository->create($validated);
+    }
+
+    public function show(Workspace $workspace): array
+    {
+        $workspace->load(["columns" => function (BelongsToMany $query) use ($workspace) {
+            $query
+                ->withPivot(["visible"])
+                ->with(["tasks" => function (HasMany $taskQuery) use ($workspace) {
+                    $taskQuery->where("workspace_uuid", "=", $workspace->uuid);
+                }])
+                ->orderBy("columns.id");
+        }]);
+
+        $workspace->columns->each(function ($column) {
+            $column->pivot->makeHidden(["workspace_uuid", "column_id"]);
+        });
+
+        return $workspace->toArray();
     }
 
     public function changePosition(Workspace $workspace, array $data, int $userId): void
@@ -48,5 +68,10 @@ class WorkspaceService implements WorkspaceServiceInterface
                     ->decrement("position", 1);
             }
         });
+    }
+
+    public function getVisibleColumns(Workspace $workspace): Collection
+    {
+        return $this->workspaceRepository->getVisibleColumns($workspace);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Column;
+use App\Models\Task;
 use App\Models\Workspace;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -22,9 +24,26 @@ class DatabaseSeeder extends Seeder
             });
         }
 
-        Workspace::factory(6)
-            ->state(new Sequence(fn(Sequence $sequence) => ["name" => "Project " . $sequence->index + 1]))
+        $workspaces = Workspace::factory(6)
+            ->state(new Sequence(fn(Sequence $sequence) => ["name" => "Workspace " . $sequence->index + 1]))
             ->recycle(User::superuser())
+            ->create();
+
+        $columnIds = Column::query()->pluck("id")->toArray();
+
+        $defaultPivotData = [];
+
+        foreach ($columnIds as $columnId) {
+            $defaultPivotData[$columnId] = ["visible" => true];
+        }
+
+        foreach ($workspaces as $workspace) {
+            $workspace->columns()->syncWithoutDetaching($defaultPivotData);
+        }
+
+        Task::factory(500)
+            ->recycle(Column::query()->get())
+            ->recycle($workspaces)
             ->create();
     }
 }

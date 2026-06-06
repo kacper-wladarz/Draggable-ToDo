@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router";
 import { useAuthContext } from "../../Providers/Auth/AuthContext";
-import FadeIn from "../Animations/FadeIn";
+import Animations from "../Animations";
 
 const ProtectedRoute = () => {
     const { user, token } = useAuthContext();
@@ -10,9 +10,9 @@ const ProtectedRoute = () => {
     }
 
     return (
-        <FadeIn>
+        <Animations.FadeIn>
             <Outlet />
-        </FadeIn>
+        </Animations.FadeIn>
     );
 };
 

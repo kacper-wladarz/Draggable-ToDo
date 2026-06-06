@@ -11,5 +11,9 @@ interface WorkspaceServiceInterface
 
     public function store(array $data, int $userId): Workspace;
 
+    public function show(Workspace $workspace): array;
+
     public function changePosition(Workspace $workspace, array $data, int $userId): void;
+
+    public function getVisibleColumns(Workspace $workspace): Collection;
 }

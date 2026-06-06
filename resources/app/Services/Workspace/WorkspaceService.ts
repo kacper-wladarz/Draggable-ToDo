@@ -9,12 +9,16 @@ class WorkspaceService {
         return await api.post("/workspaces", data).then((res) => res.data)
     }
 
-    public static async getSingleWorkspace(uuid: string): Promise<Workspace> {
+    public static async getSingleWorkspace(uuid: string): Promise<WorkspaceWithColumnsAndTasks> {
         return await api.get(`/workspaces/${uuid}`).then((res) => res.data)
     }
 
     public static async changeWorkspacePosition(data: ChangeWorkspacePosition) {
         return await api.patch(`/workspaces/${data.uuid}/position`, { position_from: data.position_from, position_to: data.position_to });
+    }
+
+    public static async getVisibleColumns(uuid: string): Promise<Column[]> {
+        return await api.get(`/workspaces/${uuid}/visible-columns`).then((res) => res.data);
     }
 }
 

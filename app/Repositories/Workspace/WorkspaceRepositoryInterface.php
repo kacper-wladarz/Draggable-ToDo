@@ -13,4 +13,6 @@ interface WorkspaceRepositoryInterface
     public function create(array $data): Workspace;
 
     public function getCountOfUserWorkspaces(int $userId): int;
+
+    public function getVisibleColumns(Workspace $workspace): Collection;
 }

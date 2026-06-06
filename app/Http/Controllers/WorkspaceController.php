@@ -7,11 +7,20 @@ use App\Models\Workspace;
 use App\Services\Workspace\WorkspaceServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Symfony\Component\HttpFoundation\Response;
 
-class WorkspaceController extends Controller
+class WorkspaceController extends Controller implements HasMiddleware
 {
     public function __construct(private WorkspaceServiceInterface $workspaceService) {}
+
+    public static function middleware()
+    {
+        return [
+            new Middleware("can:isOwner,workspace", ["show", "changeWorkspacePosition", "getVisibleColumns"]),
+        ];
+    }
 
     public function index(Request $request): JsonResponse
     {
@@ -29,9 +38,12 @@ class WorkspaceController extends Controller
         );
     }
 
-    public function show(Request $request, string $workspaceUuid): JsonResponse
+    public function show(Request $request, Workspace $workspace): JsonResponse
     {
-        return response()->json(Workspace::query()->find($workspaceUuid), Response::HTTP_OK);
+        return response()->json(
+            $this->workspaceService->show($workspace),
+            Response::HTTP_OK
+        );
     }
 
     public function changeWorkspacePosition(Request $request, Workspace $workspace): JsonResponse
@@ -39,5 +51,13 @@ class WorkspaceController extends Controller
         $this->workspaceService->changePosition($workspace, $request->all(), $request->user()->id);
 
         return response()->json([], Response::HTTP_NO_CONTENT);
+    }
+
+    public function getVisibleColumns(Request $request, Workspace $workspace)
+    {
+        return response()->json(
+            $this->workspaceService->getVisibleColumns($workspace),
+            Response::HTTP_OK
+        );
     }
 }

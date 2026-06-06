@@ -23,13 +23,13 @@ const FormInput = ({ label, errors, ...props }: Props) => {
             <div className="relative">
                 <input
                     {...props}
-                    className="outline-none text-white/90 font-medium"
+                    className="outline-none text-white/90 font-medium placeholder:text-white/40"
                     onFocus={() => setIsInputActive(true)}
                     onBlur={() => setIsInputActive(false)}
                 />
                 <div className="absolute w-full h-0.5 bg-white/30"></div>
                 <div
-                    className={`auto_size absolute h-0.5 bg-orange-500 ${isInputActive || props.value ? "w-full" : "w-0"} transition-[width] duration-700`}
+                    className={`auto_size absolute h-0.5 bg-orange-500 ${isInputActive || props.value ? "w-full" : "w-0"} transition-[width] duration-400`}
                 ></div>
             </div>
             <span

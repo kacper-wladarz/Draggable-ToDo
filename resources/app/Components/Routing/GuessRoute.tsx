@@ -1,18 +1,19 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router";
 import { useAuthContext } from "../../Providers/Auth/AuthContext";
-import FadeIn from "../Animations/FadeIn";
+import Animations from "../Animations";
 
 const GuessRoute = () => {
     const { user, token } = useAuthContext();
+    const { pathname } = useLocation();
 
     if (token && user) {
         return <Navigate to="/" replace />;
     }
 
     return (
-        <FadeIn>
+        <Animations.FadeIn key={pathname}>
             <Outlet />
-        </FadeIn>
+        </Animations.FadeIn>
     );
 };
 

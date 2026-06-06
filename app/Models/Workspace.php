@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use App\Policies\WorkspacePolicy;
 use App\Repositories\Workspace\WorkspaceRepositoryInterface;
 use Carbon\Carbon;
 use Database\Factories\WorkspaceFactory;
 use Exception;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -24,15 +28,18 @@ use Illuminate\Validation\Rule;
  * @property Carbon $updated_at
  * 
  * @property User $user
+ * @property Collection<Column> $columns
  */
+
 #[Fillable(["name", "user_id", "position"])]
 class Workspace extends Model
 {
     use HasUuids, HasFactory;
 
+    public $incrementing = false;
+    public $timestamps = false;
     protected $table = "workspaces";
     protected $primaryKey = "uuid";
-    public $incrementing = false;
 
     protected $casts = [
         "name" => "string",
@@ -50,6 +57,16 @@ class Workspace extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, "user_id", "id");
+    }
+
+    public function columns(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Column::class,
+            modelTableName(WorkspaceColumnAttachment::class),
+            "workspace_uuid",
+            "column_id"
+        );
     }
 
     public static function validateCreate(array $data, int $userId)

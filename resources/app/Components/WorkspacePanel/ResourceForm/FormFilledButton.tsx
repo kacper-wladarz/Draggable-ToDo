@@ -4,7 +4,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
     text: string;
 }
 
-const FormConfirmButton = ({ text, ...props }: Props) => {
+const FormFilledButton = ({ text, ...props }: Props) => {
     return (
         <button
             {...props}
@@ -15,4 +15,4 @@ const FormConfirmButton = ({ text, ...props }: Props) => {
     );
 };
 
-export default FormConfirmButton;
+export default FormFilledButton;

@@ -11,8 +11,29 @@ interface Workspace {
     name: string
     user_id: number
     position: number
-    created_at: string
-    updated_at: string
+}
+
+interface WorkspaceWithColumnsAndTasks extends Workspace {
+    columns: ColumnForWorkspace[]
+}
+
+interface ColumnForWorkspace {
+    id: number
+    name: string
+    tasks: Task[]
+    pivot: Pivot
+}
+
+interface Pivot {
+    visible: boolean
+}
+
+interface Task {
+    uuid: string
+    title: string
+    workspace_uuid: string
+    column_id: number
+    position: number
 }
 
 interface WorkspaceContext {

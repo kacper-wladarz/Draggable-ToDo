@@ -4,7 +4,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
     text: string;
 }
 
-const FormClearButton = ({ text, ...props }: Props) => {
+const FormBorderButton = ({ text, ...props }: Props) => {
     return (
         <button
             {...props}
@@ -15,4 +15,4 @@ const FormClearButton = ({ text, ...props }: Props) => {
     );
 };
 
-export default FormClearButton;
+export default FormBorderButton;

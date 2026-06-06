@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import { useAuthQuery } from "../../Tanstack/Auth/AuthQueries";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -22,6 +28,12 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         }
         setToken(newToken);
     };
+
+    useEffect(() => {
+        const handler = () => setToken(null);
+        window.addEventListener("unauthorized", handler);
+        return () => window.removeEventListener("unauthorized", handler);
+    }, []);
 
     return (
         <AuthContext.Provider

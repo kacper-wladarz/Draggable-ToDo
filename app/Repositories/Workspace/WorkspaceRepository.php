@@ -25,4 +25,13 @@ class WorkspaceRepository implements WorkspaceRepositoryInterface
     {
         return $this->getUserWorkspaces($userId)->count();
     }
+
+    public function getVisibleColumns(Workspace $workspace): Collection
+    {
+        return $workspace
+            ->columns()
+            ->wherePivot("visible", "=", true)
+            ->get(["columns.id", "columns.name"])
+            ->makeHidden("pivot");
+    }
 }
