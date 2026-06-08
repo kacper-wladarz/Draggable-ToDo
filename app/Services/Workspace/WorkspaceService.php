@@ -70,6 +70,16 @@ class WorkspaceService implements WorkspaceServiceInterface
         });
     }
 
+    public function update(Workspace $workspace, array $data, int $userId): Workspace
+    {
+        $validated = Workspace::validateUpdate($data, $userId);
+
+        $workspace->fill($validated);
+        $workspace->save();
+
+        return $workspace;
+    }
+
     public function getVisibleColumns(Workspace $workspace): Collection
     {
         return $this->workspaceRepository->getVisibleColumns($workspace);

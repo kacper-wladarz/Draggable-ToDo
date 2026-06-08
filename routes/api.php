@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ColumnController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
@@ -27,7 +26,9 @@ Route::name("api.")->group(function () {
                     ->group(function () {
                         Route::get("/", [WorkspaceController::class, "show"])->name("show");
                         Route::patch("/position", [WorkspaceController::class, "changeWorkspacePosition"])->name("change-position");
+                        Route::put("/", [WorkspaceController::class, "update"])->name("update");
                         Route::get("/visible-columns", [WorkspaceController::class, "getVisibleColumns"])->name("visible-columns");
+                        Route::delete("/", [WorkspaceController::class, "delete"])->name("delete");
 
                         /**
                          * Workspace's tasks

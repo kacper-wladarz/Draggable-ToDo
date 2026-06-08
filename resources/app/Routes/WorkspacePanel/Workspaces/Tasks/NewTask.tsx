@@ -8,7 +8,8 @@ import { useCreateTask } from "../../../../Tanstack/Task/TaskMutations";
 import { useQueryClient } from "@tanstack/react-query";
 import Animations from "../../../../Components/Animations";
 import Form from "../../../../Components/WorkspacePanel/ResourceForm";
-import { Undo2 } from "lucide-react";
+import ReturnToPage from "../../../../Components/Routing/ReturnToPage";
+import { ButtonAppearance } from "../../../../Components/WorkspacePanel/ResourceForm/FormButton";
 
 const NewTask = () => {
     const [newTask, setNewTask] = useState<NewTask>({
@@ -52,11 +53,12 @@ const NewTask = () => {
     return (
         <Animations.FadeIn>
             <div className="flex flex-col flex-1">
-                <div className="text-white/40 flex items-center gap-x-1 font-medium p-4">
-                    <Undo2 />
-                    <span>{workspace.name}</span>
-                </div>
-                <Form onSubmit={handleCreateTask}>
+                <ReturnToPage
+                    url={`/workspaces/${workspaceUuid}`}
+                    text={workspace.name}
+                    className="p-4"
+                />
+                <Form onSubmit={handleCreateTask} className="p-10">
                     <Form.Header>New Task</Form.Header>
                     <Form.Input
                         label="Task title"
@@ -84,15 +86,17 @@ const NewTask = () => {
                         errors={errors.column_id}
                     />
                     <Form.Actions>
-                        <Form.BorderButton
+                        <Form.Button
                             text={"Clear"}
                             type="button"
                             onClick={clear}
+                            appearance={ButtonAppearance.bordered}
                         />
-                        <Form.FilledButton
+                        <Form.Button
                             text={"Create"}
                             type="submit"
                             disabled={createTask.isPending}
+                            appearance={ButtonAppearance.filled}
                         />
                     </Form.Actions>
                 </Form>

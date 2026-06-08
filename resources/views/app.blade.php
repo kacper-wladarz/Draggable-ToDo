@@ -28,5 +28,6 @@
 </head>
 <body>
     <div id="root"></div>
+    <div id="modal-container"></div>
 </body>
 </html>

@@ -42,6 +42,7 @@ interface WorkspaceContext {
     workspacesList: Workspace[]
     setWorkspacesList: React.Dispatch<React.SetStateAction<Workspace[]>>
     addWorkspaceToList: (workspace: Workspace) => void
+    removeWorkspaceFromList: (uuid: string) => void
 }
 
 interface ChangeWorkspacePosition {

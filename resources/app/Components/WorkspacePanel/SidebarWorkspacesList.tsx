@@ -33,8 +33,6 @@ const SidebarWorkspacesList = () => {
         },
     });
 
-    console.log(workspacesList);
-
     return (
         <ul className="text-white py-1 flex flex-col gap-y-1.5 overflow-y-auto pl-4 pr-4">
             {workspacesList.map((workspace, index) => (

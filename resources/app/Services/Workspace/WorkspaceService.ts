@@ -20,6 +20,14 @@ class WorkspaceService {
     public static async getVisibleColumns(uuid: string): Promise<Column[]> {
         return await api.get(`/workspaces/${uuid}/visible-columns`).then((res) => res.data);
     }
+
+    public static async updateWorkspace(uuid: string, data: NewWorkspace): Promise<Workspace> {
+        return await api.put(`/workspaces/${uuid}`, data).then((res) => res.data)
+    }
+
+    public static async delete(uuid: string): Promise<any> {
+        return await api.delete(`/workspaces/${uuid}`).then((res) => res.data)
+    }
 }
 
 export default WorkspaceService

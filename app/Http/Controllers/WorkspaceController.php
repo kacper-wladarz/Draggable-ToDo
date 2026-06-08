@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Workspace;
 use App\Services\Workspace\WorkspaceServiceInterface;
+use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -18,7 +19,13 @@ class WorkspaceController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware("can:isOwner,workspace", ["show", "changeWorkspacePosition", "getVisibleColumns"]),
+            new Middleware("can:isOwner,workspace", [
+                "show",
+                "changeWorkspacePosition",
+                "update",
+                "delete",
+                "getVisibleColumns"
+            ]),
         ];
     }
 
@@ -49,6 +56,25 @@ class WorkspaceController extends Controller implements HasMiddleware
     public function changeWorkspacePosition(Request $request, Workspace $workspace): JsonResponse
     {
         $this->workspaceService->changePosition($workspace, $request->all(), $request->user()->id);
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
+    }
+
+    public function update(Request $request, Workspace $workspace): JsonResponse
+    {
+        return response()->json(
+            $this->workspaceService->update(
+                $workspace,
+                $request->all(),
+                $request->user()->id
+            ),
+            Response::HTTP_OK
+        );
+    }
+
+    public function delete(Request $request, Workspace $workspace): JsonResponse
+    {
+        $workspace->delete();
 
         return response()->json([], Response::HTTP_NO_CONTENT);
     }

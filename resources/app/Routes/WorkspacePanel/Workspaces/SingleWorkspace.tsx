@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { useWorkspace } from "../../../Tanstack/Workspace/WorkspaceQueries";
 import { useMemo } from "react";
 import { DragDropProvider, useDroppable } from "@dnd-kit/react";
@@ -6,11 +6,12 @@ import { useSortable } from "@dnd-kit/react/sortable";
 import { CollisionPriority } from "@dnd-kit/abstract";
 import Animations from "../../../Components/Animations";
 import Form from "../../../Components/WorkspacePanel/ResourceForm";
+import { LayersPlus, PenLine } from "lucide-react";
+import { ButtonAppearance } from "../../../Components/WorkspacePanel/ResourceForm/FormButton";
 
 const SingleWorkspace = () => {
     const { workspaceUuid } = useParams() as { workspaceUuid: string };
     const { data: rawWorkspace } = useWorkspace(workspaceUuid);
-    const navigate = useNavigate();
 
     const workspace = useMemo(
         () => ({
@@ -25,12 +26,22 @@ const SingleWorkspace = () => {
 
     return (
         <Animations.FadeIn>
-            <div className="flex-1 flex flex-col gap-y-3 overflow-hidden p-3">
+            <div className="flex-1 flex flex-col gap-y-3 overflow-hidden p-4">
                 <Form.Actions>
-                    <Form.FilledButton
-                        text="Create a task"
-                        onClick={() => navigate("tasks/new")}
-                    />
+                    <Link to={"manage"}>
+                        <Form.Button
+                            text="Manage workspace"
+                            icon={<PenLine size={18} />}
+                            appearance={ButtonAppearance.bordered}
+                        />
+                    </Link>
+                    <Link to={"tasks/new"}>
+                        <Form.Button
+                            text="Create a task"
+                            icon={<LayersPlus size={18} />}
+                            appearance={ButtonAppearance.filled}
+                        />
+                    </Link>
                 </Form.Actions>
                 <div className="flex-1 flex overflow-hidden text-white px-8">
                     <div className="flex-1 grid grid-flow-col auto-cols-max gap-x-10 overflow-auto p-1">

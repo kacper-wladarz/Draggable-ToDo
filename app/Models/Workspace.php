@@ -69,7 +69,7 @@ class Workspace extends Model
         );
     }
 
-    public static function validateCreate(array $data, int $userId)
+    public static function validateCreate(array $data, int $userId): array
     {
         return Validator::validate($data, [
             "name" => [
@@ -83,7 +83,21 @@ class Workspace extends Model
         ], [], ["name" => "workspace name"]);
     }
 
-    public static function validateChangePosition(array $data, int $userId, Workspace $workspace)
+    public static function validateUpdate(array $data, int $userId): array
+    {
+        return Validator::validate($data, [
+            "name" => [
+                "required",
+                "string",
+                "max:255",
+                Rule::unique(modelValidationPrefix(self::class))->where(
+                    fn(Builder $query) => $query->where("user_id", "=", $userId)
+                )
+            ]
+        ], [], ["name" => "workspace name"]);
+    }
+
+    public static function validateChangePosition(array $data, int $userId, Workspace $workspace): array
     {
         $workspacesCount = self::query()->where("user_id", "=", $userId)->count();
 

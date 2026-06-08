@@ -5,6 +5,7 @@ import { useWorkspaceContext } from "../../../Providers/Workspace/WorkspaceConte
 import { useQueryClient } from "@tanstack/react-query";
 import Animations from "../../../Components/Animations";
 import Form from "../../../Components/WorkspacePanel/ResourceForm";
+import { ButtonAppearance } from "../../../Components/WorkspacePanel/ResourceForm/FormButton";
 
 const NewWorkspace = () => {
     const queryClient = useQueryClient();
@@ -44,7 +45,8 @@ const NewWorkspace = () => {
 
     return (
         <Animations.FadeIn>
-            <Form onSubmit={handleCreateWorkspace}>
+            <Form onSubmit={handleCreateWorkspace} className="p-10">
+                <Form.Header>New workspace</Form.Header>
                 <Form.Input
                     label="Project name"
                     errors={errors.name}
@@ -59,15 +61,17 @@ const NewWorkspace = () => {
                     }
                 />
                 <Form.Actions>
-                    <Form.BorderButton
+                    <Form.Button
                         text={"Clear"}
                         type="button"
                         onClick={clear}
+                        appearance={ButtonAppearance.bordered}
                     />
-                    <Form.BorderButton
+                    <Form.Button
                         text={"Create"}
                         type="submit"
                         disabled={createWorkspace.isPending}
+                        appearance={ButtonAppearance.filled}
                     />
                 </Form.Actions>
             </Form>

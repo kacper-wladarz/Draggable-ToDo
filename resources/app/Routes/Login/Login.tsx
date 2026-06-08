@@ -4,8 +4,10 @@ import { useLoginMutation } from "../../Tanstack/Auth/AuthMutations";
 import { Link } from "react-router";
 import LoginPageInput from "../../Components/AuthPage/LoginPageInput";
 import LoginPageSubmitButton from "../../Components/AuthPage/LoginPageSubmitButton";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Login = () => {
+    const queryClient = useQueryClient();
     const { setToken } = useAuthContext();
     const [userData, setUserData] = useState<UserLoginCredentials>({
         login: "",
@@ -21,6 +23,7 @@ const Login = () => {
         loginUser.mutate(userData, {
             onSuccess: (res) => {
                 setToken(res.data.token);
+                queryClient.removeQueries({ queryKey: ["workspaces"] });
             },
             onError: (error) => {
                 setError(error.data.message);

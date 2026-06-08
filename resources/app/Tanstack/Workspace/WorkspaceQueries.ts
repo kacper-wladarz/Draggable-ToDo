@@ -3,13 +3,13 @@ import WorkspaceService from "../../Services/Workspace/WorkspaceService";
 
 export const useWorkspaces = (isLoggedIn: boolean) => {
     return useSuspenseQuery({
-        queryKey: ["workspaces", isLoggedIn],
+        queryKey: ["workspaces"],
         queryFn: async () => {
             if (!isLoggedIn) return [];
 
             return await WorkspaceService.getWorkspaces();
         },
-        staleTime: 1000 * 60 * 5
+        staleTime: Infinity
     });
 };
 

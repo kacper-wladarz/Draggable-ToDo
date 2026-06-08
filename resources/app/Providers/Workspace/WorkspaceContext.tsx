@@ -8,32 +8,43 @@ import {
 import { useWorkspaces } from "../../Tanstack/Workspace/WorkspaceQueries";
 import { useAuthContext } from "../Auth/AuthContext";
 
-const WorkspaceContext = createContext<WorkspaceContext>(
-    {} as WorkspaceContext,
-);
+const WorkspaceContext = createContext<WorkspaceContext>({
+    workspacesList: [],
+    setWorkspacesList: () => {},
+    openedWorkspaceUuid: null,
+    setOpenedWorkspaceUuid: () => {},
+    addWorkspaceToList: () => {},
+    removeWorkspaceFromList: () => {},
+});
 
 export const WorkspaceContextProvider = ({
     children,
 }: {
     children: ReactNode;
 }) => {
-    const { user } = useAuthContext();
+    const { token } = useAuthContext();
     const [openedWorkspaceUuid, setOpenedWorkspaceUuid] = useState<
         string | null
     >(null);
 
-    const { data: rawWorkspacesList = [] } = useWorkspaces(!!user);
+    const { data: rawWorkspacesList = [] } = useWorkspaces(!!token);
 
     const [workspacesList, setWorkspacesList] = useState<Workspace[]>([]);
 
     useEffect(() => {
-        setWorkspacesList(
-            rawWorkspacesList.sort((a, b) => b.position - a.position),
-        );
+        if (rawWorkspacesList) {
+            setWorkspacesList(
+                rawWorkspacesList.sort((a, b) => b.position - a.position),
+            );
+        }
     }, [rawWorkspacesList]);
 
     const addWorkspaceToList = (workspace: Workspace) => {
         setWorkspacesList((prev) => [workspace, ...prev]);
+    };
+
+    const removeWorkspaceFromList = (uuid: string) => {
+        setWorkspacesList((prev) => prev.filter((item) => item.uuid !== uuid));
     };
 
     return (
@@ -44,6 +55,7 @@ export const WorkspaceContextProvider = ({
                 workspacesList,
                 setWorkspacesList,
                 addWorkspaceToList,
+                removeWorkspaceFromList,
             }}
         >
             {children}
