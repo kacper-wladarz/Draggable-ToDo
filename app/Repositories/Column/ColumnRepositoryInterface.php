@@ -8,5 +8,7 @@ use Illuminate\Support\Collection;
 
 interface ColumnRepositoryInterface
 {
+    public function getAll(): Collection;
+
     public function isVisible(Column|int $column, Workspace|string $workspace): bool;
 }

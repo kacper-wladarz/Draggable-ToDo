@@ -1,14 +1,7 @@
-import {
-    createContext,
-    ReactNode,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useAuthQuery } from "../../Tanstack/Auth/AuthQueries";
 import { useQueryClient } from "@tanstack/react-query";
-
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+import { AuthContext } from "./AuthContext";
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const queryClient = useQueryClient();
@@ -30,7 +23,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     };
 
     useEffect(() => {
-        const handler = () => setToken(null);
+        const handler = () => setTokenState(null);
         window.addEventListener("unauthorized", handler);
         return () => window.removeEventListener("unauthorized", handler);
     }, []);
@@ -54,13 +47,4 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             {children}
         </AuthContext.Provider>
     );
-};
-
-export const useAuthContext = () => {
-    const context = useContext(AuthContext);
-    if (!context)
-        throw new Error(
-            "useAuthContext must be used within an AuthContextProvider",
-        );
-    return context;
 };

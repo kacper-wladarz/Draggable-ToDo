@@ -121,6 +121,14 @@ class Workspace extends Model
         ]);
     }
 
+    public static function validateToggleColumnVisibility(array $data): array
+    {
+        return Validator::validate($data, [
+            "column_id" => ["required", "integer", Rule::exists(modelValidationPrefix(Column::class), "id")],
+            "visible" => ["required", "boolean"]
+        ]);
+    }
+
     protected static function boot()
     {
         parent::boot();

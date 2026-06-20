@@ -4,14 +4,21 @@ namespace App\Services\Workspace;
 
 use App\Enums\OrderByEnum;
 use App\Models\Workspace;
+use App\Repositories\Column\ColumnRepositoryInterface;
+use App\Repositories\Task\TaskRepositoryInterface;
 use App\Repositories\Workspace\WorkspaceRepositoryInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 class WorkspaceService implements WorkspaceServiceInterface
 {
-    public function __construct(private WorkspaceRepositoryInterface $workspaceRepository) {}
+    public function __construct(
+        private WorkspaceRepositoryInterface $workspaceRepository,
+        private ColumnRepositoryInterface $columnRepository,
+        private TaskRepositoryInterface $taskRepository
+    ) {}
 
     public function get(int $userId): Collection
     {
@@ -24,7 +31,17 @@ class WorkspaceService implements WorkspaceServiceInterface
 
         $validated["user_id"] = $userId;
 
-        return $this->workspaceRepository->create($validated);
+        $workspace = $this->workspaceRepository->create($validated);
+
+        $columns = $this->columnRepository->getAll();
+
+        $workspace->columns()->attach(
+            $columns->pluck("id")->mapWithKeys(fn(int $id) => [
+                $id => ["visible" => true]
+            ])->toArray()
+        );
+
+        return $workspace;
     }
 
     public function show(Workspace $workspace): array
@@ -74,8 +91,7 @@ class WorkspaceService implements WorkspaceServiceInterface
     {
         $validated = Workspace::validateUpdate($data, $userId);
 
-        $workspace->fill($validated);
-        $workspace->save();
+        $workspace->update($validated);
 
         return $workspace;
     }
@@ -83,5 +99,20 @@ class WorkspaceService implements WorkspaceServiceInterface
     public function getVisibleColumns(Workspace $workspace): Collection
     {
         return $this->workspaceRepository->getVisibleColumns($workspace);
+    }
+
+    public function toggleColumnVisibility(Workspace $workspace, array $data): void
+    {
+        $validated = Workspace::validateToggleColumnVisibility($data);
+
+        $taskExists = $this->taskRepository->taskExists($workspace->uuid, $validated["column_id"]);
+
+        if ($taskExists) {
+            throw new Exception("To disable a column, it must not have any tasks assigned to it");
+        }
+
+        $workspace->columns()->updateExistingPivot($validated["column_id"], [
+            "visible" => $validated["visible"]
+        ]);
     }
 }

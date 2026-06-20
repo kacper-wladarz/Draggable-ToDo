@@ -27,4 +27,13 @@ class TaskService implements TaskServiceInterface
 
         return $this->taskRepository->create($validated);
     }
+
+    public function update(Task $task, array $data): Task
+    {
+        $validated = Task::validateUpdate($data);
+
+        $task->update($validated);
+
+        return $task;
+    }
 }

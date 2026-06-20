@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useAuthContext } from "../../Providers/Auth/AuthContext";
 import { useLogoutMutation } from "../../Tanstack/Auth/AuthMutations";
 import { useNavigate } from "react-router";
+import { useAuthContext } from "../../Providers/Auth/useAuthContext";
 
 const TopBar = () => {
     const { user, setToken } = useAuthContext();

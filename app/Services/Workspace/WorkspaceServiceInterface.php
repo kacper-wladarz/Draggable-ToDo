@@ -18,4 +18,6 @@ interface WorkspaceServiceInterface
     public function update(Workspace $workspace, array $data, int $userId): Workspace;
 
     public function getVisibleColumns(Workspace $workspace): Collection;
+
+    public function toggleColumnVisibility(Workspace $workspace, array $data): void;
 }

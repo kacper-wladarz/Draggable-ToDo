@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router";
 import LoginPageInput from "../../Components/AuthPage/LoginPageInput";
 import LoginPageSubmitButton from "../../Components/AuthPage/LoginPageSubmitButton";
-import { useAuthContext } from "../../Providers/Auth/AuthContext";
 import { useRegistrationMutation } from "../../Tanstack/Auth/AuthMutations";
+import { useAuthContext } from "../../Providers/Auth/useAuthContext";
 
 const Registration = () => {
     const { setToken } = useAuthContext();

@@ -8,6 +8,11 @@ use Illuminate\Support\Collection;
 
 class ColumnRepository implements ColumnRepositoryInterface
 {
+    public function getAll(): Collection
+    {
+        return Column::query()->get();
+    }
+
     public function isVisible(Column|int $column, Workspace|string $workspace): bool
     {
         $column = $column instanceof Column ? $column : Column::query()->findOrFail($column);

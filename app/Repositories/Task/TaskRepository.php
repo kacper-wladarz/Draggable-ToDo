@@ -20,4 +20,13 @@ class TaskRepository implements TaskRepositoryInterface
                 ->where("workspace_uuid", "=", $workspaceUuid);
         })->count();
     }
+
+    public function taskExists(string $workspaceUuid, int $columnId): bool
+    {
+        return Task::query()->where(function (Builder $query) use ($workspaceUuid, $columnId) {
+            $query
+                ->where("workspace_uuid", "=", $workspaceUuid)
+                ->where("column_id", "=", $columnId);
+        })->exists();
+    }
 }

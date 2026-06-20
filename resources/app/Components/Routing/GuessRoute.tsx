@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router";
-import { useAuthContext } from "../../Providers/Auth/AuthContext";
 import Animations from "../Animations";
+import { useAuthContext } from "../../Providers/Auth/useAuthContext";
 
 const GuessRoute = () => {
     const { user, token } = useAuthContext();

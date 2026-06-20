@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useAuthContext } from "../../Providers/Auth/AuthContext";
 import { useLoginMutation } from "../../Tanstack/Auth/AuthMutations";
 import { Link } from "react-router";
 import LoginPageInput from "../../Components/AuthPage/LoginPageInput";
 import LoginPageSubmitButton from "../../Components/AuthPage/LoginPageSubmitButton";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuthContext } from "../../Providers/Auth/useAuthContext";
 
 const Login = () => {
     const queryClient = useQueryClient();

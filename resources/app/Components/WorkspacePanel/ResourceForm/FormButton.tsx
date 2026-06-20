@@ -45,7 +45,7 @@ const FormButton = ({
             className={`min-h-7 rounded-sm px-1 py-0.5 font-medium text-white/80 cursor-pointer disabled:cursor-default disabled:text-white/60 transition-all duration-150 flex items-center gap-x-1 disabled:pointer-events-none ${appearanceMap[variant][appearance]}`}
         >
             {icon}
-            <span>{text}</span>
+            <span className="whitespace-nowrap">{text}</span>
         </button>
     );
 };

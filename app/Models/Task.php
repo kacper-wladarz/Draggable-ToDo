@@ -55,6 +55,13 @@ class Task extends Model
         ]);
     }
 
+    public static function validateUpdate(array $data): array
+    {
+        return Validator::validate($data, [
+            "title" => ["sometimes", "string", "max:255", "min:3"]
+        ]);
+    }
+
     protected static function boot()
     {
         parent::boot();

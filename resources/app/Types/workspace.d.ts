@@ -36,17 +36,33 @@ interface Task {
     position: number
 }
 
+interface ManageTaskData {
+    title: string
+}
+
+type ManageTaskDataErrors = {
+    [K in keyof ManageTaskData]?: string[]
+}
+
 interface WorkspaceContext {
     openedWorkspaceUuid: string | null
     setOpenedWorkspaceUuid: React.Dispatch<React.SetStateAction<string | null>>
-    workspacesList: Workspace[]
-    setWorkspacesList: React.Dispatch<React.SetStateAction<Workspace[]>>
-    addWorkspaceToList: (workspace: Workspace) => void
-    removeWorkspaceFromList: (uuid: string) => void
 }
 
 interface ChangeWorkspacePosition {
     uuid: string
     position_from: number
     position_to: number
+}
+
+interface ToggleColumnVisibility {
+    uuid: string
+    column_id: number
+    visible: boolean
+}
+
+interface DragOriginPosition {
+    index: number
+    columnId: number
+    taskUuid: string
 }

@@ -1,6 +1,5 @@
 import { Link } from "react-router";
 import { SquarePen } from "lucide-react";
-import { DragDropProvider } from "@dnd-kit/react";
 import SidebarWorkspacesList from "./SidebarWorkspacesList";
 
 const Sidebar = () => {
@@ -27,9 +26,7 @@ const Sidebar = () => {
                 <div className="text-white/50 flex items-center gap-x-1 font-medium text-lg px-4">
                     <p className="text-md">Workspaces</p>
                 </div>
-                <DragDropProvider>
-                    <SidebarWorkspacesList />
-                </DragDropProvider>
+                <SidebarWorkspacesList />
             </div>
         </div>
     );

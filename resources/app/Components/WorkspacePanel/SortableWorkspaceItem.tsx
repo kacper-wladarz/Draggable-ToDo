@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/react/sortable";
-import { useWorkspaceContext } from "../../Providers/Workspace/WorkspaceContext";
 import { Link } from "react-router";
 import { GripVertical } from "lucide-react";
+import { useWorkspaceContext } from "../../Providers/Workspace/useWorkspaceContext";
 
 interface Props {
     workspace: Workspace;

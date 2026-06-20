@@ -8,4 +8,6 @@ use App\Models\Workspace;
 interface TaskServiceInterface
 {
     public function store(Workspace $workspace, array $data): Task;
+
+    public function update(Task $task, array $data): Task;
 }

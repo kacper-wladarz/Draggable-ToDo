@@ -28,7 +28,8 @@ Route::name("api.")->group(function () {
                         Route::patch("/position", [WorkspaceController::class, "changeWorkspacePosition"])->name("change-position");
                         Route::put("/", [WorkspaceController::class, "update"])->name("update");
                         Route::get("/visible-columns", [WorkspaceController::class, "getVisibleColumns"])->name("visible-columns");
-                        Route::delete("/", [WorkspaceController::class, "delete"])->name("delete");
+                        Route::delete("/", [WorkspaceController::class, "destroy"])->name("delete");
+                        Route::patch("/columns/visibility", [WorkspaceController::class, "toggleColumnVisibility"])->name("toggle-visibility");
 
                         /**
                          * Workspace's tasks
@@ -36,6 +37,10 @@ Route::name("api.")->group(function () {
                         Route::prefix("tasks")
                             ->name("tasks.")->group(function () {
                                 Route::post("/", [TaskController::class, "store"])->name("store");
+                                Route::prefix("/{task}")->group(function () {
+                                    Route::patch("/", [TaskController::class, "update"])->name("update");
+                                    Route::delete("/", [TaskController::class, "destroy"])->name("delete");
+                                });
                             });
                     });
             });

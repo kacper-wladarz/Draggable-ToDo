@@ -19,7 +19,12 @@ const SingleWorkspace = lazy(
 const NewTask = lazy(
     () => import("../Routes/WorkspacePanel/Workspaces/Tasks/NewTask"),
 );
-const Manage = lazy(() => import("../Routes/WorkspacePanel/Workspaces/Manage"));
+const ManageWorkspace = lazy(
+    () => import("../Routes/WorkspacePanel/Workspaces/Manage"),
+);
+const ManageTask = lazy(
+    () => import("../Routes/WorkspacePanel/Workspaces/Tasks/ManageTask"),
+);
 
 export const router = createBrowserRouter([
     {
@@ -47,12 +52,21 @@ export const router = createBrowserRouter([
                                         element: <SingleWorkspace />,
                                     },
                                     {
-                                        path: "tasks/new",
-                                        element: <NewTask />,
+                                        path: "manage",
+                                        element: <ManageWorkspace />,
                                     },
                                     {
-                                        path: "manage",
-                                        element: <Manage />,
+                                        path: "tasks",
+                                        children: [
+                                            {
+                                                path: "new",
+                                                element: <NewTask />,
+                                            },
+                                            {
+                                                path: ":taskUuid",
+                                                element: <ManageTask />,
+                                            },
+                                        ],
                                     },
                                 ],
                             },

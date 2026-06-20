@@ -28,6 +28,13 @@ class WorkspaceService {
     public static async delete(uuid: string): Promise<any> {
         return await api.delete(`/workspaces/${uuid}`).then((res) => res.data)
     }
+
+    public static async toggleColumnVisibility(data: ToggleColumnVisibility): Promise<any> {
+        return await api.patch(`/workspaces/${data.uuid}/columns/visibility`, {
+            column_id: data.column_id,
+            visible: data.visible
+        }).then((res) => res.data)
+    }
 }
 
 export default WorkspaceService

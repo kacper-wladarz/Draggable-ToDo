@@ -23,7 +23,7 @@ class WorkspaceController extends Controller implements HasMiddleware
                 "show",
                 "changeWorkspacePosition",
                 "update",
-                "delete",
+                "destroy",
                 "getVisibleColumns"
             ]),
         ];
@@ -72,7 +72,7 @@ class WorkspaceController extends Controller implements HasMiddleware
         );
     }
 
-    public function delete(Request $request, Workspace $workspace): JsonResponse
+    public function destroy(Request $request, Workspace $workspace): JsonResponse
     {
         $workspace->delete();
 
@@ -85,5 +85,12 @@ class WorkspaceController extends Controller implements HasMiddleware
             $this->workspaceService->getVisibleColumns($workspace),
             Response::HTTP_OK
         );
+    }
+
+    public function toggleColumnVisibility(Request $request, Workspace $workspace): JsonResponse
+    {
+        $this->workspaceService->toggleColumnVisibility($workspace, $request->all());
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
     }
 }

@@ -17,6 +17,7 @@
         "vite": "^8.0.0"
     },
     "dependencies": {
+        "@dnd-kit/helpers": "^0.5.0",
         "@dnd-kit/react": "^0.4.0",
         "@dnd-kit/sortable": "^10.0.0",
         "@tailwindcss/vite": "^4.3.0",

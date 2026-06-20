@@ -8,3 +8,10 @@ type NewTaskErrors = {
 } & {
     column_id?: string[]
 }
+
+interface ChangePositionOfTaskInColumns {
+    column_from: number
+    column_to: number
+    position_from: number
+    position_to: number
+}

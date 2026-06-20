@@ -8,7 +8,7 @@ import {
     ButtonAppearance,
     ButtonVariant,
 } from "../../../Components/WorkspacePanel/ResourceForm/FormButton";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUpdateWorkspace } from "../../../Tanstack/Workspace/WorkspaceMutations";
 import { useQueryClient } from "@tanstack/react-query";
 import DeleteModal from "../../../Components/WorkspacePanel/DeleteModal";
@@ -36,6 +36,11 @@ const Manage = () => {
 
         return isChanged;
     }, [workspaceData, prevData]);
+
+    useEffect(() => {
+        setWorkspaceData({ name: workspace.name });
+        setPrevData({ name: workspace.name });
+    }, [workspace.name]);
 
     const handleUpdateWorkspace = (
         event: React.SubmitEvent<HTMLFormElement>,

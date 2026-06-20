@@ -1,11 +1,11 @@
 import { SubmitEvent, useState } from "react";
 import { useCreateWorkspace } from "../../../Tanstack/Workspace/WorkspaceMutations";
 import { useNavigate } from "react-router";
-import { useWorkspaceContext } from "../../../Providers/Workspace/WorkspaceContext";
 import { useQueryClient } from "@tanstack/react-query";
 import Animations from "../../../Components/Animations";
 import Form from "../../../Components/WorkspacePanel/ResourceForm";
 import { ButtonAppearance } from "../../../Components/WorkspacePanel/ResourceForm/FormButton";
+import { useWorkspaceContext } from "../../../Providers/Workspace/useWorkspaceContext";
 
 const NewWorkspace = () => {
     const queryClient = useQueryClient();
@@ -16,7 +16,7 @@ const NewWorkspace = () => {
     const [errors, setErrors] = useState<NewWorkspaceErrors>({});
     const createWorkspace = useCreateWorkspace();
     const navigate = useNavigate();
-    const { addWorkspaceToList } = useWorkspaceContext();
+    const { setOpenedWorkspaceUuid } = useWorkspaceContext();
 
     const clear = () => {
         setNewWorkspace({
@@ -31,10 +31,11 @@ const NewWorkspace = () => {
 
         createWorkspace.mutate(newWorkspace, {
             onSuccess: (workspace) => {
-                addWorkspaceToList(workspace);
-                queryClient.invalidateQueries({
-                    queryKey: ["workspaces", true],
-                });
+                queryClient.setQueryData(
+                    ["workspaces"],
+                    (prev: Workspace[] = []) => [workspace, ...prev],
+                );
+                setOpenedWorkspaceUuid(workspace.uuid);
                 navigate(`/workspaces/${workspace.uuid}`);
             },
             onError: (err) => {
