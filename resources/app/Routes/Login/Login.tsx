@@ -1,29 +1,20 @@
-import { useEffect, useState } from "react";
-import { useAuthContext } from "../../Providers/Auth/AuthContext";
-import { useLoginMutation } from "../../Queries/AuthQuery";
-import { Link, useNavigate } from "react-router";
-import LoginPageInput from "../../Components/LoginPage/LoginPageInput";
-import LoginPageSubmitButton from "../../Components/LoginPage/LoginPageSubmitButton";
+import { useState } from "react";
+import { useLoginMutation } from "../../Tanstack/Auth/AuthMutations";
+import { Link } from "react-router";
+import LoginPageInput from "../../Components/AuthPage/LoginPageInput";
+import LoginPageSubmitButton from "../../Components/AuthPage/LoginPageSubmitButton";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuthContext } from "../../Providers/Auth/useAuthContext";
 
 const Login = () => {
-    const { isAuthenticated, setToken } = useAuthContext();
+    const queryClient = useQueryClient();
+    const { setToken } = useAuthContext();
     const [userData, setUserData] = useState<UserLoginCredentials>({
         login: "",
         password: "",
     });
     const loginUser = useLoginMutation();
-    const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigate("/", { replace: true });
-        }
-    }, [isAuthenticated, navigate]);
-
-    if (isAuthenticated) {
-        return null;
-    }
 
     const handleLogin = (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -31,9 +22,8 @@ const Login = () => {
 
         loginUser.mutate(userData, {
             onSuccess: (res) => {
-                localStorage.setItem("user_auth", res.data.token);
                 setToken(res.data.token);
-                navigate("/");
+                queryClient.removeQueries({ queryKey: ["workspaces"] });
             },
             onError: (error) => {
                 setError(error.data.message);

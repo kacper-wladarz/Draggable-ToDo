@@ -1,14 +1,12 @@
 const LoaderIcon = () => {
     return (
-        <div
-            className={`w-full h-full flex-1 flex justify-center items-center`}
-        >
+        <div className="w-full h-full flex justify-center items-center">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={64}
                 height={64}
                 viewBox="0 0 24 24"
-                className={`text-white`}
+                className={`text-white animate-spin`}
             >
                 <path
                     fill="currentColor"
@@ -18,16 +16,7 @@ const LoaderIcon = () => {
                 <path
                     fill="currentColor"
                     d="M20 12h2A10 10 0 0 0 12 2V4A8 8 0 0 1 20 12Z"
-                >
-                    <animateTransform
-                        attributeName="transform"
-                        dur="1s"
-                        from="0 12 12"
-                        repeatCount="indefinite"
-                        to="360 12 12"
-                        type="rotate"
-                    ></animateTransform>
-                </path>
+                ></path>
             </svg>
         </div>
     );

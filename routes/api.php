@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
 Route::name("api.")->group(function () {
@@ -12,7 +13,37 @@ Route::name("api.")->group(function () {
         Route::post("/logout", [AuthController::class, "logout"])->middleware("auth:sanctum")->name("logout");
     });
 
-    Route::middleware("auth:sanctum")->name("projects.")->group(function () {
-        Route::post("/", [ProjectController::class, "create"])->name("create");
+    Route::middleware("auth:sanctum")->group(function () {
+        /**
+         * Workspaces
+         */
+        Route::prefix("workspaces")
+            ->name("workspaces.")
+            ->group(function () {
+                Route::get("/", [WorkspaceController::class, "index"])->name("get");
+                Route::post("/", [WorkspaceController::class, "store"])->name("store");
+                Route::prefix("/{workspace}")
+                    ->group(function () {
+                        Route::get("/", [WorkspaceController::class, "show"])->name("show");
+                        Route::patch("/position", [WorkspaceController::class, "changeWorkspacePosition"])->name("change-position");
+                        Route::put("/", [WorkspaceController::class, "update"])->name("update");
+                        Route::delete("/", [WorkspaceController::class, "destroy"])->name("delete");
+                        Route::get("/visible-columns", [WorkspaceController::class, "getVisibleColumns"])->name("visible-columns");
+                        Route::patch("/columns/visibility", [WorkspaceController::class, "toggleColumnVisibility"])->name("toggle-visibility");
+
+                        /**
+                         * Workspace's tasks
+                         */
+                        Route::prefix("tasks")
+                            ->name("tasks.")->group(function () {
+                                Route::post("/", [TaskController::class, "store"])->name("store");
+                                Route::prefix("/{task}")->group(function () {
+                                    Route::patch("/", [TaskController::class, "update"])->name("update");
+                                    Route::delete("/", [TaskController::class, "destroy"])->name("delete");
+                                    Route::post("/position", [TaskController::class, "changePosition"])->name("change-position");
+                                });
+                            });
+                    });
+            });
     });
 });

@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\NewAccessToken;
-use Override;
 
 class AuthService implements AuthServiceInterface
 {
@@ -26,11 +25,11 @@ class AuthService implements AuthServiceInterface
         try {
             $user = $this->userRepository->findByLogin($data["login"]);
         } catch (ModelNotFoundException $exception) {
-            return throw new Exception("Invalid credentials");
+            throw new Exception("Invalid credentials");
         }
 
         if (!Hash::check($validated["password"], $user->password)) {
-            return throw new Exception("Invalid credentials");
+            throw new Exception("Invalid credentials");
         }
 
         $user->tokens()->where("expires_at", "<", now())->delete();

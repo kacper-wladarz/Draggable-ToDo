@@ -4,8 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,7 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (ValidationException $exception, Request $request) {
             if ($request->is("api/*")) {
                 return response()->json([
-                    "message" => array_merge(...array_values($exception->errors()))[0]
+                    "message" => array_merge(...array_values($exception->errors()))[0],
+                    "errors" => $exception->errors()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         });
