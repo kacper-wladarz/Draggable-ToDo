@@ -112,7 +112,7 @@ const ManageTask = () => {
                     />
                     <Form.Actions>
                         <Form.Button
-                            text="Delete workspace"
+                            text="Delete task"
                             icon={<Trash size={18} />}
                             appearance={ButtonAppearance.filled}
                             variant={ButtonVariant.delete}

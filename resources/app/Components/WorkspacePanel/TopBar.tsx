@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useLogoutMutation } from "../../Tanstack/Auth/AuthMutations";
 import { useNavigate } from "react-router";
 import { useAuthContext } from "../../Providers/Auth/useAuthContext";
+import { useWorkspaceContext } from "../../Providers/Workspace/useWorkspaceContext";
 
 const TopBar = () => {
     const { user, setToken } = useAuthContext();
+    const { setOpenedWorkspaceUuid } = useWorkspaceContext();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const logoutMutation = useLogoutMutation();
     const navigate = useNavigate();
@@ -13,6 +15,7 @@ const TopBar = () => {
         await logoutMutation.mutateAsync().finally(() => {
             setToken(null);
             navigate("/login");
+            setOpenedWorkspaceUuid(null);
         });
     };
 

@@ -31,3 +31,18 @@ export const useDeleteTask = () => {
         }) => await TaskService.delete(workspaceUuid, taskUuid)
     })
 }
+
+export const useChangeTaskPosition = () => {
+    return useMutation({
+        mutationKey: ["change-position"],
+        mutationFn: async ({
+            workspaceUuid,
+            taskUuid,
+            data
+        }: {
+            workspaceUuid: string,
+            taskUuid: string,
+            data: ChangePositionOfTaskInColumns
+        }) => await TaskService.changePosition(workspaceUuid, taskUuid, data)
+    })
+}

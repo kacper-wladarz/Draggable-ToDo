@@ -34,7 +34,7 @@ class TaskControllerTest extends TestCase
 
         $this->actingAs($user);
 
-        $result = $this->json("POST", route("api.tasks.store", $data))
+        $result = $this->json("POST", route("api.workspaces.tasks.store", ["workspace" => $workspace->uuid]), $data)
             ->assertStatus(Response::HTTP_CREATED)
             ->json();
 

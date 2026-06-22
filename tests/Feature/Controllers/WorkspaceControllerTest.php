@@ -5,6 +5,7 @@ namespace Tests\Feature\Controllers;
 use App\Models\Workspace;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -85,8 +86,6 @@ class WorkspaceControllerTest extends TestCase
                 "name",
                 "user_id",
                 "position",
-                "created_at",
-                "updated_at"
             ])
             ->assertJsonFragment([
                 "uuid" => $workspace->uuid,

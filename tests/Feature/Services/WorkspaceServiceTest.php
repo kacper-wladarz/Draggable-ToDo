@@ -6,6 +6,7 @@ use App\Models\Workspace;
 use App\Models\User;
 use App\Services\Workspace\WorkspaceServiceInterface;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

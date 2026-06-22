@@ -12,6 +12,10 @@ class TaskService {
     public static async delete(workspaceUuid: string, taskUuid: string): Promise<any> {
         return await api.delete(`/workspaces/${workspaceUuid}/tasks/${taskUuid}`).then((res) => res.data)
     }
+
+    public static async changePosition(workspaceUuid: string, taskUuid: string, data: ChangePositionOfTaskInColumns): Promise<any> {
+        return await api.post(`/workspaces/${workspaceUuid}/tasks/${taskUuid}/position`, data).then((res) => res.data)
+    }
 }
 
 export default TaskService

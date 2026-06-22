@@ -42,7 +42,7 @@ class Column extends Model
             modelTableName(WorkspaceColumnAttachment::class),
             "column_id",
             "workspace_uuid"
-        );
+        )->withPivot(["visible"]);
     }
 
     public function tasks(): HasMany

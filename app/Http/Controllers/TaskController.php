@@ -19,7 +19,12 @@ class TaskController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware("can:isOwner,workspace", ["store", "update", "destroy"]),
+            new Middleware("can:isOwner,workspace", [
+                "store",
+                "update",
+                "destroy",
+                "changePosition"
+            ]),
         ];
     }
 
@@ -41,6 +46,13 @@ class TaskController extends Controller implements HasMiddleware
     public function destroy(Request $request, Workspace $workspace, Task $task): JsonResponse
     {
         $task->delete();
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
+    }
+
+    public function changePosition(Request $request, Workspace $workspace, Task $task): JsonResponse
+    {
+        $this->taskService->changePosition($task, $request->all(), $request->user());
 
         return response()->json([], Response::HTTP_NO_CONTENT);
     }

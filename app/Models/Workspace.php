@@ -108,7 +108,7 @@ class Workspace extends Model
                 "between:0," . ($workspacesCount - 1),
                 function ($attribute, $value, $fail) use ($workspace) {
                     if ($workspace->position !== $value) {
-                        $fail("The position_from does not match the current workspace position");
+                        $fail("The {$attribute} field does not match the current workspace position");
                     }
                 }
             ],

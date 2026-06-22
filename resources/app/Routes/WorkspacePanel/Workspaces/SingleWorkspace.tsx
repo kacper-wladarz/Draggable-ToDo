@@ -10,12 +10,14 @@ import { move } from "@dnd-kit/helpers";
 import { useQueryClient } from "@tanstack/react-query";
 import WorkspaceColumn from "../../../Components/WorkspacePanel/WorkspaceColumn";
 import { useRef } from "react";
+import { useChangeTaskPosition } from "../../../Tanstack/Task/TaskMutations";
 
 const SingleWorkspace = () => {
     const queryClient = useQueryClient();
     const { workspaceUuid } = useParams() as { workspaceUuid: string };
     const { data: workspace } = useWorkspace(workspaceUuid);
     const dragOriginPosition = useRef<DragOriginPosition | null>(null);
+    const changeTaskPositionMutation = useChangeTaskPosition();
 
     const moveTask = (
         workspace: WorkspaceWithColumnsAndTasks,
@@ -157,13 +159,32 @@ const SingleWorkspace = () => {
 
                                     if (!column) return;
 
-                                    const to = {
-                                        index:
+                                    const data = {
+                                        column_id_from:
+                                            dragOriginPosition.current.columnId,
+                                        column_id_to: column.id,
+                                        old_position_in_column:
+                                            dragOriginPosition.current.index,
+                                        new_position_in_column:
                                             column.tasks.length -
                                             1 -
                                             source.index,
-                                        group: source.group,
                                     };
+
+                                    if (
+                                        data.column_id_from ===
+                                            data.column_id_to &&
+                                        data.old_position_in_column ===
+                                            data.new_position_in_column
+                                    )
+                                        return;
+
+                                    changeTaskPositionMutation.mutate({
+                                        workspaceUuid,
+                                        taskUuid:
+                                            dragOriginPosition.current.taskUuid,
+                                        data,
+                                    });
                                 }
                             }}
                         >

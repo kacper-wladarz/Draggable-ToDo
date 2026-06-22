@@ -1,6 +1,6 @@
 import { SubmitEvent, useState } from "react";
 import {
-    useWorksaceVisibleColumns,
+    useWorkspaceVisibleColumns,
     useWorkspace,
 } from "../../../../Tanstack/Workspace/WorkspaceQueries";
 import { useNavigate, useParams } from "react-router";
@@ -19,7 +19,7 @@ const NewTask = () => {
     const [errors, setErrors] = useState<NewTaskErrors>({});
     const { workspaceUuid } = useParams() as { workspaceUuid: string };
     const { data: visibleColumns = [] } =
-        useWorksaceVisibleColumns(workspaceUuid);
+        useWorkspaceVisibleColumns(workspaceUuid);
     const { data: workspace } = useWorkspace(workspaceUuid);
     const createTask = useCreateTask(workspaceUuid);
     const queryClient = useQueryClient();
@@ -34,6 +34,7 @@ const NewTask = () => {
                 navigate(`/workspaces/${workspaceUuid}`);
                 queryClient.resetQueries({
                     queryKey: ["workspaces", workspaceUuid],
+                    exact: true,
                 });
             },
             onError: (error) => {

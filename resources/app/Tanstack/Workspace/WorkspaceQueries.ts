@@ -1,10 +1,13 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import WorkspaceService from "../../Services/Workspace/WorkspaceService";
 
-export const useWorkspaces = () => {
+export const useWorkspaces = (token?: string | null) => {
     return useSuspenseQuery({
         queryKey: ["workspaces"],
-        queryFn: async () => await WorkspaceService.getWorkspaces(),
+        queryFn: async () => {
+            if (!token) return []
+            return await WorkspaceService.getWorkspaces()
+        },
         staleTime: Infinity,
         select: (data: Workspace[]) => [...data].sort((a, b) => b.position - a.position)
     });
@@ -28,7 +31,7 @@ export const useWorkspace = (uuid: string) => {
     })
 }
 
-export const useWorksaceVisibleColumns = (uuid: string) => {
+export const useWorkspaceVisibleColumns = (uuid: string) => {
     return useSuspenseQuery({
         queryKey: ["workspaces", uuid, "visible-columns"],
         queryFn: async () => await WorkspaceService.getVisibleColumns(uuid),

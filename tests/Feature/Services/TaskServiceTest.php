@@ -43,7 +43,7 @@ class TaskServiceTest extends TestCase
 
         $this->actingAs($user);
 
-        $result = $this->taskService->store($data);
+        $result = $this->taskService->store($workspace, $data);
 
         $this->assertDatabaseHas(modelTableName(Task::class), [
             "uuid" => $result->uuid,
@@ -74,28 +74,6 @@ class TaskServiceTest extends TestCase
         $this->actingAs($user);
 
         $this->expectExceptionMessage("The column must be visible to assign task to it");
-        $this->taskService->store($data);
-    }
-
-    #[Test]
-    public function storeThrowsExceptionWhenUserisNotOwnerOfTask(): void
-    {
-        $user1 = User::factory()->createOne();
-        $column = Column::factory()->createOne();
-        $workspace = Workspace::factory()
-            ->recycle($user1)
-            ->createOne();
-
-        $data = [
-            "title" => "Task 1",
-            "workspace_uuid" => $workspace->uuid,
-            "column_id" => $column->id
-        ];
-
-        $user2 = User::factory()->createOne();
-        $this->actingAs($user2);
-
-        $this->expectExceptionMessage("You do not own this workspace");
-        $this->taskService->store($data);
+        $this->taskService->store($workspace, $data);
     }
 }

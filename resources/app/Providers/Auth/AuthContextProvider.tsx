@@ -12,14 +12,14 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
     const { data: user } = useAuthQuery(token);
 
-    const setTokenState = (newToken: string | null) => {
+    const setTokenState = async (newToken: string | null) => {
         if (newToken) {
             localStorage.setItem("user_auth", newToken);
         } else {
             localStorage.removeItem("user_auth");
             queryClient.clear();
         }
-        setToken(newToken);
+        setToken(newToken ?? null);
     };
 
     useEffect(() => {

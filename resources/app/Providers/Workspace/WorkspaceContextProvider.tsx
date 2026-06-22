@@ -1,5 +1,7 @@
 import { ReactNode, useState } from "react";
 import { WorkspaceContext } from "./WorkspaceContext";
+import { useWorkspaces } from "../../Tanstack/Workspace/WorkspaceQueries";
+import { useAuthContext } from "../Auth/useAuthContext";
 
 export const WorkspaceContextProvider = ({
     children,
@@ -9,6 +11,9 @@ export const WorkspaceContextProvider = ({
     const [openedWorkspaceUuid, setOpenedWorkspaceUuid] = useState<
         string | null
     >(null);
+    const { token } = useAuthContext();
+
+    useWorkspaces(token);
 
     return (
         <WorkspaceContext.Provider
